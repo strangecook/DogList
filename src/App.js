@@ -1,25 +1,23 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import AnimalDaterpart from './animalDaterpart';
+import Descriotionpage from './Descriptionpage';
+import styled from 'styled-components';
 
-function App() {
+const App = () => {
+
+  const MainCoverdiv = styled.div`
+  margin: 0;
+  width: 100vw;
+  background-position: center;
+`;
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <MainCoverdiv>
+      <Descriotionpage />
+      <AnimalDaterpart />
+    </MainCoverdiv>
   );
-}
+};
 
 export default App;
