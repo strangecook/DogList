@@ -4,7 +4,7 @@ import axios from 'axios';
 axios.defaults.baseURL = 'https://api.thecatapi.com/v1';
 axios.defaults.headers.common['x-api-key'] = 'live_g6mKCRLIMjqREeQqgoy0cqJ7QyAEzC6R8HoSkWLREMZAGzGFQJHCxl2Sk4vQbqLY';
 
-const animalDaterpart = () => {
+const AnimalDaterpart = () => {
   const [images, setImages] = useState([]);
   const [breeds, setBreeds] = useState([]);
   const [selectedBreed, setSelectedBreed] = useState(0);
@@ -60,4 +60,4 @@ const animalDaterpart = () => {
   );
 };
 
-export default animalDaterpart;
+export default AnimalDaterpart;
