@@ -1,10 +1,24 @@
-
+import styled from 'styled-components';
+import AnimalDaterpart from '../home/animalDaterpart';
+import Descriotionpage from '../home/Descriptionpage';
+import LoginNavi from '../home/LoginNavi';
 
 
 export default function Home(){
+    
+  const MainCoverdiv = styled.div`
+  margin: 0;
+  width: 100vw;
+  background-position: center;
+`;
+
     return (
         <>
-            <h1>hihi</h1>
+        <MainCoverdiv>
+            <LoginNavi />
+            <Descriotionpage />
+            <AnimalDaterpart />
+        </MainCoverdiv>
         </>
     )
 }
