@@ -7,6 +7,7 @@ import Login from './Routes/login'
 import { createGlobalStyle } from 'styled-components';
 import Loading from './component/Loading-Page';
 import AnimatedDog from './component/AnimatedDog';
+import { auth } from './firebase';
 
 
 const router = createBrowserRouter([
@@ -38,14 +39,13 @@ const GlobalStyles = createGlobalStyle`
 const App = () => {
   const [isLoding, setIsLoading] = useState(true)
   const initializing = async()=>{
-    //Wait FireBase information
+    await auth.authStateReady();
     setTimeout(() => {
-      
       setIsLoading(false)
     }, 2000);
   }
-  useEffect(()=>{
 
+  useEffect(()=>{
     initializing();
   },[]);
 
