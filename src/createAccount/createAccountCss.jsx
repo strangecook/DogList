@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 
-export const LoginCover = styled.div`
+export const Wrapper = styled.div`
   width: 100vw;
   height: 100vh;
   position: relative;
@@ -10,8 +10,7 @@ export const LoginCover = styled.div`
   align-items: center;
 `;
 
-
-export const DogLoginImage = styled.img`
+export const BackgroundImage = styled.img`
   position: absolute;
   top: 0;
   left: 0;
@@ -21,8 +20,7 @@ export const DogLoginImage = styled.img`
   z-index: -1;
 `;
 
-
-export const LoginBox = styled.div`
+export const FormBox = styled.div`
   background-color: rgba(255, 255, 255, 0.9);
   border-radius: 30px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -32,13 +30,11 @@ export const LoginBox = styled.div`
   text-align: center;
 `;
 
-
 export const Form = styled.form`
   display: flex;
   flex-direction: column;
   gap: 20px;
 `;
-
 
 export const Input = styled.input`
   padding: 10px 15px;
@@ -69,22 +65,6 @@ export const Input = styled.input`
     }
   }
 `;
-
-
-export const SignUpButton = styled.button`
-  background: none;
-  border: none;
-  color: #4caf50;
-  cursor: pointer;
-  text-decoration: underline;
-  font-size: 16px;
-  margin-top: 20px;
-
-  &:hover {
-    color: #B8E0B9;
-  }
-`;
-
 
 export const ErrorMessage = styled.span`
   color: red;
