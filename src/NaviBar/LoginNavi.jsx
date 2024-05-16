@@ -63,7 +63,7 @@ function LoginNavi() {
                         className={isHovered ? 'naviLoginButtonHovered' : 'naviLoginButton'} // 버튼의 클래스 조건부 적용
                         onMouseEnter={handleMouseEnter} // 마우스를 가져다 대는 동작에 대한 이벤트 핸들러
                         onMouseLeave={handleMouseLeave} // 마우스를 버튼에서 떼는 동작에 대한 이벤트 핸들러
-                        > 로그인
+                        > 로그인하기
                         </span>
                     </div>
             </NaviBar>

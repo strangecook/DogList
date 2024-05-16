@@ -18,7 +18,7 @@ width: calc(100vw - 36px);
 }
 
 .naviLoginButton{
-    background-color: #4caf50;
+    background-color: rgba(76, 175, 80, 0.7);;
 margin: 10px;
 border-radius: 10px;
 text-align: center;
@@ -51,7 +51,7 @@ line-height: 40px;
     width: 80px;
     height: 80px;
     border-radius: 50px;
-    background-color: #4caf50;
+    background-color: rgba(76, 175, 80, 0.7);
 }
 
 .mainHoverImageSpan{

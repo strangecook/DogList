@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import AnimalDaterpart from '../home/animalDaterpart';
 import Descriotionpage from '../home/Descriptionpage';
-import LoginNavi from '../NaviBar/LoginNavi';
 
 
 export default function Home(){
@@ -14,11 +13,10 @@ export default function Home(){
 
     return (
         <>
-        <MainCoverdiv>
-            <LoginNavi />
-            <Descriotionpage />
-            <AnimalDaterpart />
-        </MainCoverdiv>
+            <MainCoverdiv>
+                <Descriotionpage />
+                <AnimalDaterpart />
+            </MainCoverdiv>
         </>
     )
 }

@@ -19,17 +19,18 @@ const router = createBrowserRouter([
         path: "",
         element: <Home />
       },
+      {
+        path: "CreateAccount",
+        element: <CreateAccount />
+      },
+      {
+        path: "Login",
+        element: <Login />
+      }
     ]
   },
   
-  {
-    path: "CreateAccount",
-    element: <CreateAccount />
-  },
-  {
-    path: "Login",
-    element: <Login />
-  }
+
 ])
 
 const GlobalStyles = createGlobalStyle`
