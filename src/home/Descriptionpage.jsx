@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import dogLogoImage from '../anna-dudkova-urs_y9NwFcc-unsplash.avif'
+import dogLogoImage from '../Pictures/anna-dudkova-urs_y9NwFcc-unsplash.avif'
 import {DescriptionCover, Dogimage, Context} from './DescriptionpageCss'
 
 const Descriotionpage = () => {

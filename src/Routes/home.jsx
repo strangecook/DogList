@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import AnimalDaterpart from '../home/animalDaterpart';
 import Descriotionpage from '../home/Descriptionpage';
-import LoginNavi from '../home/LoginNavi';
+import LoginNavi from '../NaviBar/LoginNavi';
 
 
 export default function Home(){

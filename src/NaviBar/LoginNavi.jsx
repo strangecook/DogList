@@ -1,8 +1,8 @@
-import React, {useState ,useEffect} from 'react';
+import React, {useState} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { NaviBar } from './LoginNaviCss';
-import localImage from './free-icon-dog-2138611.png'
-import hoveredLocalImage from './free-icon-dog-2317843.png'
+import localImage from '../Pictures/free-icon-dog-2138611.png'
+import hoveredLocalImage from '../Pictures/free-icon-dog-2317843.png'
 
 function LoginNavi() {
     const navigate = useNavigate();
