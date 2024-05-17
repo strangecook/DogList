@@ -90,3 +90,24 @@ export const ErrorMessage = styled.span`
   color: red;
   font-size: 14px;
 `;
+
+
+export const GoogleLoginButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+  cursor: pointer;
+  margin-top: 10px;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+`;

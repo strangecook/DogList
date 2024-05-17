@@ -6,6 +6,7 @@ import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import { FirebaseError } from "firebase/app";
+import { AuthErrorCodes } from 'firebase/auth';
 
 export default function CreateAccount() {
   const navigate = useNavigate();
@@ -28,7 +29,6 @@ export default function CreateAccount() {
     } catch (e) {
       if (e instanceof FirebaseError) {
         const errorCode = e.code;
-        console.log(errorCode);
         setErrorMessage(`Error: ${errorCode}`); // Set error message state
       }
     } finally {
