@@ -1,10 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import dogLoginPicture from "../Pictures/fatty-corgi-EpRAM95thHU-unsplash.jpg";
-import googleLogo from "../Pictures/logo_google_icon.png"; // Google 로고 이미지를 추가
+import googleLogo from "../Pictures/logo_google_icon.png"; // Google 로고 이미지 추가
+import facebookLogo from "../Pictures/facebook_social media_social_icon.png"; // Facebook 로고 이미지 추가
 import { useForm } from "react-hook-form";
 import React, { useState } from "react";
-import { LoginCover, DogLoginImage, LoginBox, Form, Input, SignUpButton, ErrorMessage, GoogleLoginButton } from "../login/loginCss"; // GoogleLoginButton 추가
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { LoginCover, DogLoginImage, LoginBox, Form, Input, SignUpButton, ErrorMessage, GoogleLoginButton, FacebookLoginButton, ButtonWrapper } from "../login/loginCss"; // FacebookLoginButton 추가
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider } from "firebase/auth";
 import { auth } from "../firebase";
 import { FirebaseError } from "firebase/app";
 
@@ -40,6 +41,24 @@ export default function Login() {
       setIsLoading(true);
       setErrorMessage(null);
       const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+      navigate("/");
+    } catch (e) {
+      if (e instanceof FirebaseError) {
+        const errorCode = e.code;
+        console.log(errorCode);
+        setErrorMessage(`Error: ${errorCode}`);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleFacebookLogin = async () => {
+    try {
+      setIsLoading(true);
+      setErrorMessage(null);
+      const provider = new FacebookAuthProvider();
       await signInWithPopup(auth, provider);
       navigate("/");
     } catch (e) {
@@ -96,11 +115,17 @@ export default function Login() {
             disabled={isLoading}
           />
         </Form>
+        <ButtonWrapper>
+          <GoogleLoginButton onClick={handleGoogleLogin} disabled={isLoading}>
+            <img src={googleLogo} alt="Google Logo" style={{ width: "24px", marginRight: "8px" }} />
+            {isLoading ? "로그인 중..." : "Google로 로그인"}
+          </GoogleLoginButton>
+          <FacebookLoginButton onClick={handleFacebookLogin} disabled={isLoading}>
+            <img src={facebookLogo} alt="Facebook Logo" style={{ width: "24px", marginRight: "8px" }} />
+            {isLoading ? "로그인 중..." : "Facebook으로 로그인"}
+          </FacebookLoginButton>
+        </ButtonWrapper>
         <SignUpButton onClick={moveToCreatePage}>회원가입</SignUpButton>
-        <GoogleLoginButton onClick={handleGoogleLogin} disabled={isLoading}>
-          <img src={googleLogo} alt="Google Logo" style={{ width: "24px", marginRight: "8px" }} />
-          {isLoading ? "로그인 중..." : "Google로 로그인"}
-        </GoogleLoginButton>
       </LoginBox>
     </LoginCover>
   );
