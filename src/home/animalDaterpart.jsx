@@ -1,63 +1,45 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-axios.defaults.baseURL = 'https://api.thecatapi.com/v1';
-axios.defaults.headers.common['x-api-key'] = 'live_g6mKCRLIMjqREeQqgoy0cqJ7QyAEzC6R8HoSkWLREMZAGzGFQJHCxl2Sk4vQbqLY';
-
-const AnimalDaterpart = () => {
-  const [images, setImages] = useState([]);
+const App = () => {
   const [breeds, setBreeds] = useState([]);
-  const [selectedBreed, setSelectedBreed] = useState(0);
-
-  const getBreeds = async () => {
-    const res = await axios('/breeds');
-    setBreeds(res.data);
-  };
-
-  const getCatsImagesByBreed = async (breedId, amount) => {
-    const res = await axios(`/images/search?breed_ids=${breedId}&limit=${amount}`);
-    return res.data;
-  };
-
-  const loadBreedImages = async () => {
-    console.log('Load Breed Images:', selectedBreed);
-    const breedImages = await getCatsImagesByBreed(selectedBreed, 5);
-    setImages(breedImages);
-  };
-
-  const onBreedSelectChange = async (e) => {
-    console.log("Breed Selected. ID:", e.target.value);
-    await setSelectedBreed(e.target.value);
-    await loadBreedImages();
-  };
+  const apiKey = process.env.REACT_APP_API_KEY;
 
   useEffect(() => {
-    if (breeds.length === 0) {
-      getBreeds().catch(error => {
-        console.error(error);
-      });
-    }
-  }, [breeds]);
+    const fetchBreeds = async () => {
+      try {
+        const response = await axios.get('https://api.thedogapi.com/v1/breeds', {
+          headers: {
+            'x-api-key': apiKey
+          }
+        });
+        setBreeds(response.data);
+      } catch (error) {
+        console.error('Error fetching breeds:', error);
+      }
+    };
 
-  console.log(images)
+    fetchBreeds();
+  }, [apiKey]);
 
   return (
     <div>
-      <select value={selectedBreed} onChange={onBreedSelectChange}>
-        {breeds.map((breed) => (
-          <option key={breed.id} value={breed.id}>
-            {breed.name}
-          </option>
+      <h1>Dog Breeds</h1>
+      <ul>
+        {console.log(breeds)}
+        {breeds.map(breed => (
+          <li key={breed.id}>
+            <h2>{breed.name}</h2>
+            <p>Bred for: {breed.bred_for}</p>
+            <p>Breed group: {breed.breed_group}</p>
+            <p>Life span: {breed.life_span}</p>
+            <p>Shedding level: {breed.shedding_level}</p>
+            <img src={breed.image.url} alt={breed.name} width="200" />
+          </li>
         ))}
-      </select>
-
-      <div>
-        {images.map((image, index) => (
-          <img key={index} className="cat-image" alt="" src={image.url} />
-        ))}
-      </div>
+      </ul>
     </div>
   );
 };
 
-export default AnimalDaterpart;
+export default App;
