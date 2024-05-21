@@ -3,12 +3,10 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import Layout from './component/layout';
 import Home from './Routes/home';
 import CreateAccount from './Routes/createAccount';
-import Login from './Routes/login'
+import Login from './Routes/login';
 import { createGlobalStyle } from 'styled-components';
-import Loading from './component/Loading-Page';
 import AnimatedDog from './component/AnimatedDog';
 import { auth } from './firebase';
-
 
 const router = createBrowserRouter([
   {
@@ -29,38 +27,40 @@ const router = createBrowserRouter([
       }
     ]
   },
-  
-
-])
+]);
 
 const GlobalStyles = createGlobalStyle`
-  background-color: #4caf50;
-`
+  body {
+    font-family: 'Nanum Gothic', sans-serif;
+    background-color: #f7f7f7;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+`;
 
 const App = () => {
-  const [isLoding, setIsLoading] = useState(true)
-  const initializing = async()=>{
+  const [isLoading, setIsLoading] = useState(true);
+
+  const initializing = async () => {
     await auth.authStateReady();
     setTimeout(() => {
-      setIsLoading(false)
+      setIsLoading(false);
     }, 2000);
-  }
+  };
 
-  useEffect(()=>{
+  useEffect(() => {
     initializing();
-  },[]);
+  }, []);
 
   return (
     <>
-    <GlobalStyles />
-    {
-      isLoding ?
-      <AnimatedDog/>
-      :
-      <RouterProvider
-        router={router}>
-      </RouterProvider>
-    }
+      <GlobalStyles />
+      {isLoading ? (
+        <AnimatedDog />
+      ) : (
+        <RouterProvider router={router} />
+      )}
     </>
   );
 };

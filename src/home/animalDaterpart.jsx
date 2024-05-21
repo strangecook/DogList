@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Container, Grid, Card, Image, CardContent, Title, Text } from './animalDaterPartCss';
+import DescriptionSection from './DescriptionSection';
 
 const App = () => {
   const [breeds, setBreeds] = useState([]);
@@ -23,22 +25,23 @@ const App = () => {
   }, [apiKey]);
 
   return (
-    <div>
-      <h1>Dog Breeds</h1>
-      <ul>
-        {console.log(breeds)}
+    <Container>
+      <DescriptionSection />
+      <Grid>
         {breeds.map(breed => (
-          <li key={breed.id}>
-            <h2>{breed.name}</h2>
-            <p>Bred for: {breed.bred_for}</p>
-            <p>Breed group: {breed.breed_group}</p>
-            <p>Life span: {breed.life_span}</p>
-            <p>Shedding level: {breed.shedding_level}</p>
-            <img src={breed.image.url} alt={breed.name} width="200" />
-          </li>
+          <Card key={breed.id}>
+            <Image src={breed.image?.url} alt={breed.name} />
+            <CardContent>
+              <Title>{breed.name}</Title>
+              <Text>Bred for: {breed.bred_for || 'N/A'}</Text>
+              <Text>Breed group: {breed.breed_group || 'N/A'}</Text>
+              <Text>Life span: {breed.life_span || 'N/A'}</Text>
+              <Text>Shedding level: {breed.shedding_level || 'N/A'}</Text>
+            </CardContent>
+          </Card>
         ))}
-      </ul>
-    </div>
+      </Grid>
+    </Container>
   );
 };
 

@@ -66,6 +66,7 @@ border: solid 1px;
 cursor: pointer;
 font-weight: bold;
 width: 95%;
+transition: all 0.3s ease;
 
 }
 
@@ -84,6 +85,7 @@ border: solid 1px;
 cursor: pointer;
 font-weight: bold;
 width: 95%;
+transition: all 0.3s ease;
 }
 
 .emaildiv{
