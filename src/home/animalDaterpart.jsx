@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Container, Grid, Card, ImageContainer, Image, CardContentTopLeft, CardContentBottomRight, Title, Text, SearchBar } from './animalDaterPartCss';
 import DescriptionSection from './DescriptionSection';
+import CustomModal from '../component/Modal';
 
 const ImageWithFallback = ({ src, alt }) => {
   const [imgSrc, setImgSrc] = useState(src);
 
   const handleError = () => {
-    setImgSrc('fallback-image-url'); // 대체 이미지 URL
+    setImgSrc('fallback-image-url');
   };
 
   return <Image src={imgSrc} alt={alt} onError={handleError} />;
@@ -16,6 +17,8 @@ const ImageWithFallback = ({ src, alt }) => {
 const App = () => {
   const [breeds, setBreeds] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [selectedBreed, setSelectedBreed] = useState(null);
   const apiKey = process.env.REACT_APP_API_KEY;
 
   useEffect(() => {
@@ -45,6 +48,16 @@ const App = () => {
     breed.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const openModal = (breed) => {
+    setSelectedBreed(breed);
+    setModalIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
+    setSelectedBreed(null);
+  };
+
   return (
     <>
       <Container>
@@ -58,7 +71,7 @@ const App = () => {
         />
         <Grid>
           {filteredBreeds.map(breed => (
-            <Card key={breed.id}>
+            <Card key={breed.id} onClick={() => openModal(breed)}>
               <ImageContainer>
                 <ImageWithFallback src={breed.image?.url} alt={breed.name} />
                 <CardContentTopLeft>
@@ -72,6 +85,13 @@ const App = () => {
           ))}
         </Grid>
       </Container>
+      {selectedBreed && (
+        <CustomModal 
+          isOpen={modalIsOpen} 
+          onRequestClose={closeModal} 
+          breed={selectedBreed} 
+        />
+      )}
     </>
   );
 };

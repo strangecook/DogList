@@ -68,7 +68,9 @@ export const Title = styled.h2`
 
 export const Text = styled.p`
   margin: 0;
-  font-size: 0.9em;
+  font-size: 1.2em;
+-webkit-text-stroke-width: 0.3px;
+-webkit-text-stroke-color: black;
 `;
 
 export const SearchBar = styled.input`
