@@ -1,10 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Container, Grid, Card, Image, CardContent, Title, Text } from './animalDaterPartCss';
+import { Container, Grid, Card, ImageContainer, Image, CardContentTopLeft, CardContentBottomRight, Title, Text, SearchBar } from './animalDaterPartCss';
 import DescriptionSection from './DescriptionSection';
+
+const ImageWithFallback = ({ src, alt }) => {
+  const [imgSrc, setImgSrc] = useState(src);
+
+  const handleError = () => {
+    setImgSrc('fallback-image-url'); // 대체 이미지 URL
+  };
+
+  return <Image src={imgSrc} alt={alt} onError={handleError} />;
+};
 
 const App = () => {
   const [breeds, setBreeds] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const apiKey = process.env.REACT_APP_API_KEY;
 
   useEffect(() => {
@@ -15,7 +26,13 @@ const App = () => {
             'x-api-key': apiKey
           }
         });
-        setBreeds(response.data);
+
+        const filteredBreeds = response.data.filter(breed => {
+          const image = breed.image;
+          return image && image.width > image.height;
+        });
+
+        setBreeds(filteredBreeds);
       } catch (error) {
         console.error('Error fetching breeds:', error);
       }
@@ -24,24 +41,38 @@ const App = () => {
     fetchBreeds();
   }, [apiKey]);
 
+  const filteredBreeds = breeds.filter(breed =>
+    breed.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <Container>
-      <DescriptionSection />
-      <Grid>
-        {breeds.map(breed => (
-          <Card key={breed.id}>
-            <Image src={breed.image?.url} alt={breed.name} />
-            <CardContent>
-              <Title>{breed.name}</Title>
-              <Text>Bred for: {breed.bred_for || 'N/A'}</Text>
-              <Text>Breed group: {breed.breed_group || 'N/A'}</Text>
-              <Text>Life span: {breed.life_span || 'N/A'}</Text>
-              <Text>Shedding level: {breed.shedding_level || 'N/A'}</Text>
-            </CardContent>
-          </Card>
-        ))}
-      </Grid>
-    </Container>
+    <>
+      <Container>
+        <h1>Dog Breeds</h1>
+        <DescriptionSection />
+        <SearchBar
+          type="text"
+          placeholder="Search for a breed..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <Grid>
+          {filteredBreeds.map(breed => (
+            <Card key={breed.id}>
+              <ImageContainer>
+                <ImageWithFallback src={breed.image?.url} alt={breed.name} />
+                <CardContentTopLeft>
+                  <Title>{breed.name}</Title>
+                </CardContentTopLeft>
+                <CardContentBottomRight>
+                  <Text>{breed.bred_for || 'N/A'}</Text>
+                </CardContentBottomRight>
+              </ImageContainer>
+            </Card>
+          ))}
+        </Grid>
+      </Container>
+    </>
   );
 };
 
