@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import dogLogoImage from '../Pictures/anna-dudkova-urs_y9NwFcc-unsplash.avif';
-import { DescriptionCover, Dogimage, Context } from './DescriptionpageCss';
+import { DescriptionCover, Dogimage, Context, Notification } from './DescriptionpageCss';
 import { db } from '../firebase';
 import { collection, addDoc } from 'firebase/firestore';
 
@@ -9,6 +9,7 @@ const Descriotionpage = () => {
   const [emailvalue, setEmailValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const [isError, setIsError] = useState(false);
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -26,16 +27,19 @@ const Descriotionpage = () => {
   const handleSubscribe = async () => {
     if (emailvalue === '') {
       setMessage('이메일을 입력해주세요.');
+      setIsError(true);
       return;
     }
 
     if (!validateEmail(emailvalue)) {
       setMessage('유효한 이메일 주소를 입력해주세요.');
+      setIsError(true);
       return;
     }
 
     setIsLoading(true);
     setMessage('');
+    setIsError(false);
     
     try {
       await addDoc(collection(db, 'users'), {
@@ -44,9 +48,11 @@ const Descriotionpage = () => {
       });
       setEmailValue('');
       setMessage('구독이 완료되었습니다.');
+      setIsError(false);
     } catch (error) {
       console.error('Error adding document: ', error);
       setMessage('구독 중 오류가 발생했습니다. 다시 시도해주세요.');
+      setIsError(true);
     } finally {
       setIsLoading(false);
     }
@@ -85,8 +91,8 @@ const Descriotionpage = () => {
               >
                 {isLoading ? '구독 중...' : '새로운 정보 구독하기'}
               </button>
-              {message && <p>{message}</p>}
             </div>
+            {message && <Notification isError={isError}>{message}</Notification>}
           </div>
         </Context>
       </DescriptionCover>
