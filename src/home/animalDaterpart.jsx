@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Container, Grid, Card, ImageContainer, Image, CardContentTopLeft, CardContentBottomRight, Title, Text, SearchBar } from './animalDaterPartCss';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
+import { Container, Grid, Card, ImageContainer, Image, CardContentTopLeft, CardContentBottomRight, Title, Text } from './animalDaterPartCss';
 import DescriptionSection from './DescriptionSection';
 import CustomModal from '../component/Modal';
+import { db } from '../firebase';
+import { collection, getDocs } from 'firebase/firestore';
 
 const ImageWithFallback = ({ src, alt }) => {
   const [imgSrc, setImgSrc] = useState(src);
@@ -15,38 +16,53 @@ const ImageWithFallback = ({ src, alt }) => {
 };
 
 const App = () => {
-  const [breeds, setBreeds] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [allBreeds, setAllBreeds] = useState([]);
+  const [displayedBreeds, setDisplayedBreeds] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedBreed, setSelectedBreed] = useState(null);
-  const apiKey = process.env.REACT_APP_API_KEY;
+  const [isFetching, setIsFetching] = useState(false);
+  const breedsPerPage = 20;
 
-  useEffect(() => {
-    const fetchBreeds = async () => {
+  const fetchBreeds = useCallback(async () => {
+    if (allBreeds.length === 0) {
+      setIsFetching(true);
       try {
-        const response = await axios.get('https://api.thedogapi.com/v1/breeds', {
-          headers: {
-            'x-api-key': apiKey
-          }
-        });
-
-        const filteredBreeds = response.data.filter(breed => {
-          const image = breed.image;
-          return image && image.width > image.height;
-        });
-
-        setBreeds(filteredBreeds);
+        const querySnapshot = await getDocs(collection(db, 'dogs'));
+        const breedsData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setAllBreeds(breedsData);
+        setDisplayedBreeds(breedsData.slice(0, breedsPerPage));
       } catch (error) {
         console.error('Error fetching breeds:', error);
       }
-    };
+      setIsFetching(false);
+    }
+  }, [allBreeds.length, breedsPerPage]);
 
+  useEffect(() => {
     fetchBreeds();
-  }, [apiKey]);
+  }, [fetchBreeds]);
 
-  const filteredBreeds = breeds.filter(breed =>
-    breed.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const loadMoreBreeds = useCallback(() => {
+    setIsFetching(true);
+    setDisplayedBreeds(prevBreeds => {
+      const currentLength = prevBreeds.length;
+      const moreBreeds = allBreeds.slice(currentLength, currentLength + breedsPerPage);
+      return [...prevBreeds, ...moreBreeds];
+    });
+    setIsFetching(false);
+  }, [allBreeds, breedsPerPage]);
+
+  const observer = useRef();
+  const lastBreedElementRef = useCallback(node => {
+    if (isFetching) return;
+    if (observer.current) observer.current.disconnect();
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && !isFetching) {
+        loadMoreBreeds();
+      }
+    });
+    if (node) observer.current.observe(node);
+  }, [isFetching, loadMoreBreeds]);
 
   const openModal = (breed) => {
     setSelectedBreed(breed);
@@ -63,22 +79,21 @@ const App = () => {
       <Container>
         <h1>Dog Breeds</h1>
         <DescriptionSection />
-        <SearchBar
-          type="text"
-          placeholder="Search for a breed..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
         <Grid>
-          {filteredBreeds.map(breed => (
-            <Card key={breed.id} onClick={() => openModal(breed)}>
+          {console.log(displayedBreeds)}
+          {displayedBreeds.map((breed, index) => (
+            <Card 
+              key={breed.id} 
+              onClick={() => openModal(breed)}
+              ref={displayedBreeds.length === index + 1 ? lastBreedElementRef : null}
+            >
               <ImageContainer>
                 <ImageWithFallback src={breed.image?.url} alt={breed.name} />
                 <CardContentTopLeft>
-                  <Title>{breed.name}</Title>
+                  <Title>{breed.koreanName}</Title>
                 </CardContentTopLeft>
                 <CardContentBottomRight>
-                  <Text>{breed.bred_for || 'N/A'}</Text>
+                  <Text>{breed.temperament}</Text>
                 </CardContentBottomRight>
               </ImageContainer>
             </Card>
@@ -92,6 +107,7 @@ const App = () => {
           breed={selectedBreed} 
         />
       )}
+      {isFetching && <div>Loading more breeds...</div>}
     </>
   );
 };
