@@ -9,15 +9,19 @@
     "@testing-library/user-event": "^13.5.0",
     "@thatapicompany/thecatapi": "^1.0.2",
     "axios": "^1.6.8",
+    "chart.js": "^4.4.3",
     "firebase": "^10.12.0",
     "react": "^18.3.1",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.51.4",
     "react-modal": "^3.16.1",
     "react-router-dom": "^6.23.0",
     "react-scripts": "5.0.1",
+    "react-tooltip": "^5.26.4",
     "styled-components": "^6.1.10",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+     "@babel/plugin-proposal-private-property-in-object": "^7.14.5"
   },
   "scripts": {
     "start": "react-scripts start",
