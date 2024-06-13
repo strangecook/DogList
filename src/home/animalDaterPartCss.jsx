@@ -15,13 +15,18 @@ export const Grid = styled.div`
 export const Card = styled.div`
   position: relative;
   background: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 12px; /* 모서리 둥글게 */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* 그림자 더 크게 */
   overflow: hidden;
-  transition: transform 0.2s;
+  transition: transform 0.3s, box-shadow 0.3s;
 
   &:hover {
-    transform: translateY(-10px);
+    transform: scale(1.05);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2); /* 그림자 더 크게 */
+  }
+
+  &:hover .hide-on-hover {
+    opacity: 0;
   }
 `;
 
@@ -31,6 +36,7 @@ export const ImageContainer = styled.div`
   height: 0;
   padding-bottom: 75%; /* 4:3 비율 */
   background-color: #f7f7f7; /* 배경색 추가 */
+  border-bottom: 1px solid #e0e0e0; /* 밑줄 추가 */
 `;
 
 export const Image = styled.img`
@@ -42,6 +48,7 @@ export const Image = styled.img`
   transform: translate(-50%, -50%);
   object-fit: cover;
   object-position: center; /* 이미지를 가운데로 배치 */
+  border-radius: 12px 12px 0 0; /* 이미지 모서리 둥글게 */
 `;
 
 export const CardContentTopLeft = styled.div`
@@ -49,7 +56,8 @@ export const CardContentTopLeft = styled.div`
   top: 10px;
   left: 10px;
   color: white;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); /* 텍스트 그림자 강화 */
+  transition: opacity 0.2s ease-in-out;
 `;
 
 export const CardContentBottomRight = styled.div`
@@ -63,14 +71,18 @@ export const CardContentBottomRight = styled.div`
 
 export const Title = styled.h2`
   margin: 0;
-  font-size: 1.5em;
+  font-size: 1.8em; /* 폰트 크기 약간 더 크게 */
+  font-weight: 700; /* 폰트 굵게 */
+  font-family: 'Nanum Gothic', sans-serif; /* 폰트 적용 */
 `;
 
 export const Text = styled.p`
   margin: 0;
   font-size: 1.2em;
--webkit-text-stroke-width: 0.3px;
--webkit-text-stroke-color: black;
+  -webkit-text-stroke-width: 0.3px;
+  -webkit-text-stroke-color: black;
+  color: #f5f5f5; /* 텍스트 색상을 밝은 회색으로 변경 */
+  font-family: 'Nanum Gothic', sans-serif; /* 폰트 적용 */
 `;
 
 export const SearchBar = styled.input`

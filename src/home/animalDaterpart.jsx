@@ -1,19 +1,11 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { Container, Grid, Card, ImageContainer, Image, CardContentTopLeft, CardContentBottomRight, Title, Text } from './animalDaterPartCss';
+import axios from 'axios';
+import { Container, Grid } from './animalDaterPartCss';
 import DescriptionSection from './DescriptionSection';
 import CustomModal from '../component/Modal';
 import { db } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
-
-const ImageWithFallback = ({ src, alt }) => {
-  const [imgSrc, setImgSrc] = useState(src);
-
-  const handleError = () => {
-    setImgSrc('fallback-image-url');
-  };
-
-  return <Image src={imgSrc} alt={alt} onError={handleError} />;
-};
+import { DogCard } from './dogCard';
 
 const App = () => {
   const [allBreeds, setAllBreeds] = useState([]);
@@ -23,14 +15,36 @@ const App = () => {
   const [isFetching, setIsFetching] = useState(false);
   const breedsPerPage = 20;
 
+  const fetchDogApiData = async () => {
+    try {
+      const response = await axios.get('https://api.thedogapi.com/v1/breeds', {
+        headers: { 'x-api-key': process.env.REACT_APP_API_KEY }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching dog API data:', error);
+      return [];
+    }
+  };
+
   const fetchBreeds = useCallback(async () => {
     if (allBreeds.length === 0) {
       setIsFetching(true);
       try {
-        const querySnapshot = await getDocs(collection(db, 'dogs'));
+        const [querySnapshot, dogApiData] = await Promise.all([
+          getDocs(collection(db, 'dogs')),
+          fetchDogApiData()
+        ]);
+
         const breedsData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setAllBreeds(breedsData);
-        setDisplayedBreeds(breedsData.slice(0, breedsPerPage));
+
+        const mergedData = breedsData.map(breed => {
+          const matchingDogApiData = dogApiData.find(dog => dog.name.toLowerCase() === breed.englishName.toLowerCase());
+          return matchingDogApiData ? { ...breed, image: { url: matchingDogApiData.image.url } } : breed;
+        });
+
+        setAllBreeds(mergedData);
+        setDisplayedBreeds(mergedData.slice(0, breedsPerPage));
       } catch (error) {
         console.error('Error fetching breeds:', error);
       }
@@ -80,23 +94,12 @@ const App = () => {
         <h1>Dog Breeds</h1>
         <DescriptionSection />
         <Grid>
-          {console.log(displayedBreeds)}
           {displayedBreeds.map((breed, index) => (
-            <Card 
+            <DogCard 
               key={breed.id} 
-              onClick={() => openModal(breed)}
+              breed={breed}
               ref={displayedBreeds.length === index + 1 ? lastBreedElementRef : null}
-            >
-              <ImageContainer>
-                <ImageWithFallback src={breed.image?.url} alt={breed.name} />
-                <CardContentTopLeft>
-                  <Title>{breed.koreanName}</Title>
-                </CardContentTopLeft>
-                <CardContentBottomRight>
-                  <Text>{breed.temperament}</Text>
-                </CardContentBottomRight>
-              </ImageContainer>
-            </Card>
+            />
           ))}
         </Grid>
       </Container>
