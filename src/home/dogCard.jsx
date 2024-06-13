@@ -1,6 +1,6 @@
 import React, { useState, forwardRef } from 'react';
 import styled from 'styled-components';
-import { Card, ImageContainer, Image, CardContentTopLeft, Title, Text } from './animalDaterPartCss';
+import { Card, ImageContainer, Image, CardContentTopLeft, Title, Text, CardContentBottomRight } from './animalDaterPartCss';
 
 const Overlay = styled.div`
   position: absolute;
@@ -29,6 +29,7 @@ const BarContainer = styled.div`
   display: flex; /* 이모티콘과 텍스트를 나란히 배치 */
   align-items: center;
   font-size: 0.9em; /* 텍스트 크기 줄이기 */
+  position: relative; /* 툴팁을 위한 상대 위치 */
 `;
 
 const Emoji = styled.span`
@@ -41,6 +42,7 @@ const BarWrapper = styled.div`
   border-radius: 5px;
   overflow: hidden;
   margin-top: 3px;
+  position: relative; /* 툴팁을 위한 상대 위치 */
 `;
 
 const Bar = styled.div`
@@ -63,6 +65,33 @@ const Bar = styled.div`
   transition: width 0.5s ease-in-out; /* 채워지는 애니메이션 */
 `;
 
+const InfoIcon = styled.span`
+  margin-left: 8px; /* 바와 이모티콘 사이의 간격 */
+  cursor: pointer;
+  position: relative;
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.3);; /* 흰색 배경 추가 */
+  padding: 2px 5px;
+  border-radius: 20px;
+  z-index: 10;
+
+  &:hover::after {
+    content: "${props => props.tooltip}";
+    position: absolute;
+    top: -5px;
+    left: 105%;
+    transform: translateX(0);
+    background: rgba(0, 0, 0, 0.9); /* 배경색을 더 진하게 */
+    color: #fff;
+    padding: 8px;
+    border-radius: 5px;
+    font-size: 0.8em;
+    white-space: pre-wrap; /* 줄바꿈 허용 */
+    width: 250px; /* 최대 너비 설정 */
+    z-index: 100; /* z-index 설정 */
+  }
+`;
+
 const BarSection = styled.div`
   width: 100%; /* 간격을 주기 위해 width를 줄임 */
   margin: 5px 0; /* 상하 간격을 최소화 */
@@ -76,13 +105,12 @@ const FixedImageContainer = styled(ImageContainer)`
   border-radius: 8px;
 `;
 
-
 export const DogCard = forwardRef(({ breed }, ref) => {
   const [hovered, setHovered] = useState(false);
 
   // 특성 평균 계산
   const averageChildFriendly = (breed.goodWithYoungChildren + breed.affectionWithFamily) / 2;
-  const averageDogFriendly = (breed.goodWithOtherDogs + breed.opennessToStrangers ) / 2;
+  const averageDogFriendly = (breed.goodWithOtherDogs + breed.opennessToStrangers) / 2;
   const averageTrainability = (breed.trainabilityLevel + breed.adaptabilityLevel) / 2;
   const averageEnergy = (breed.energyLevel + breed.playfulnessLevel) / 2;
   const averageGroomingLevel = (breed.groomingLevel + breed.sheddingLevel) / 2;
@@ -100,7 +128,8 @@ export const DogCard = forwardRef(({ breed }, ref) => {
           <BarSection>
             <BarContainer>
               <Emoji>👶</Emoji>
-              <Text>어린 자녀와 가족에게 적합성 (평균)</Text>
+              <Text>가족과의 친화도</Text>
+              <InfoIcon tooltip={`이 값은 강아지가 어린 자녀와 얼마나 잘 지내는지와 가족과의 애정 수준을 합산한 후 평균을 구한 것입니다. 높은 값일수록 강아지가 가족과 특히 어린 자녀들과 잘 어울리는 경향이 있습니다.`}>ℹ️</InfoIcon>
             </BarContainer>
             <BarWrapper>
               <Bar width={`${averageChildFriendly * 20}%`} />
@@ -109,7 +138,8 @@ export const DogCard = forwardRef(({ breed }, ref) => {
           <BarSection>
             <BarContainer>
               <Emoji>🐕</Emoji>
-              <Text>다른 반려견과 잘 어울림 (평균)</Text>
+              <Text>친화력</Text>
+              <InfoIcon tooltip={`이 값은 강아지가 다른 반려견과 얼마나 잘 어울리는지와 낯선 사람에 대한 개방성을 합산한 후 평균을 구한 것입니다. 높은 값일수록 강아지가 다른 반려견 및 사람들과 잘 어울리는 경향이 있습니다.`}>ℹ️</InfoIcon>
             </BarContainer>
             <BarWrapper>
               <Bar width={`${averageDogFriendly * 20}%`} />
@@ -118,7 +148,8 @@ export const DogCard = forwardRef(({ breed }, ref) => {
           <BarSection>
             <BarContainer>
               <Emoji>🎓</Emoji>
-              <Text>훈련 가능성 (평균)</Text>
+              <Text>훈련 가능성</Text>
+              <InfoIcon tooltip={`이 값은 강아지의 훈련 가능성과 환경 변화에 대한 적응성을 합산한 후 평균을 구한 것입니다. 높은 값일수록 강아지가 훈련하기 쉽고 새로운 환경에 잘 적응하는 경향이 있습니다.`}>ℹ️</InfoIcon>
             </BarContainer>
             <BarWrapper>
               <Bar width={`${averageTrainability * 20}%`} />
@@ -127,7 +158,8 @@ export const DogCard = forwardRef(({ breed }, ref) => {
           <BarSection>
             <BarContainer>
               <Emoji>⚡</Emoji>
-              <Text>에너지 수준 (평균)</Text>
+              <Text>에너지 수준</Text>
+              <InfoIcon tooltip={`이 값은 강아지의 에너지 수준과 장난기 수준을 합산한 후 평균을 구한 것입니다. 높은 값일수록 강아지가 에너지가 넘치고 장난기 많은 경향이 있습니다.`}>ℹ️</InfoIcon>
             </BarContainer>
             <BarWrapper>
               <Bar width={`${averageEnergy * 20}%`} />
@@ -136,7 +168,8 @@ export const DogCard = forwardRef(({ breed }, ref) => {
           <BarSection>
             <BarContainer>
               <Emoji>🪮</Emoji>
-              <Text>털 관리 및 빠짐 정도 (평균)</Text>
+              <Text>털 관리 빠짐 정도</Text>
+              <InfoIcon tooltip={`이 값은 강아지의 털 관리 필요성 및 털 빠짐 정도를 합산한 후 평균을 구한 것입니다. 높은 값일수록 강아지의 털 관리가 더 많이 필요하고, 털이 많이 빠지는 경향이 있습니다.`}>ℹ️</InfoIcon>
             </BarContainer>
             <BarWrapper>
               <Bar width={`${averageGroomingLevel * 20}%`} reverse />
@@ -159,6 +192,9 @@ export const DogCard = forwardRef(({ breed }, ref) => {
       <CardContentTopLeft className="hide-on-hover">
         <Title>{breed.koreanName}</Title>
       </CardContentTopLeft>
+      <CardContentBottomRight>
+      <Text style={{ fontSize: '1.2em', margin: 0, background: 'rgba(0, 0, 0, 0.5)', padding: '5px 10px', borderRadius: '8px' }}>{breed.englishName}</Text>
+      </CardContentBottomRight>
     </Card>
   );
 });

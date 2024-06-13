@@ -100,3 +100,4 @@ export const SearchBar = styled.input`
     outline: none;
   }
 `;
+
