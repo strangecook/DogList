@@ -105,7 +105,7 @@ const FixedImageContainer = styled(ImageContainer)`
   border-radius: 8px;
 `;
 
-export const DogCard = forwardRef(({ breed }, ref) => {
+export const DogCard = forwardRef(({ breed, onClick }, ref) => {
   const [hovered, setHovered] = useState(false);
 
   // 특성 평균 계산
@@ -119,9 +119,9 @@ export const DogCard = forwardRef(({ breed }, ref) => {
     <Card 
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onClick={() => onClick(breed)}
       ref={ref}
     >
-
       <FixedImageContainer>
         <Image src={breed.image?.url} alt={breed.englishName} />
         <Overlay style={{ opacity: hovered ? 1 : 0 }}>
@@ -193,7 +193,7 @@ export const DogCard = forwardRef(({ breed }, ref) => {
         <Title>{breed.koreanName}</Title>
       </CardContentTopLeft>
       <CardContentBottomRight>
-      <Text style={{ fontSize: '1.2em', margin: 0, background: 'rgba(0, 0, 0, 0.5)', padding: '5px 10px', borderRadius: '8px' }}>{breed.englishName}</Text>
+        <Text style={{ fontSize: '1.2em', margin: 0, background: 'rgba(0, 0, 0, 0.5)', padding: '5px 10px', borderRadius: '8px' }}>{breed.englishName}</Text>
       </CardContentBottomRight>
     </Card>
   );

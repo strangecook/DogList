@@ -81,23 +81,25 @@ const App = () => {
   const openModal = (breed) => {
     setSelectedBreed(breed);
     setModalIsOpen(true);
+    document.body.style.overflow = 'hidden'; // 모달이 열렸을 때 스크롤 막기
   };
 
   const closeModal = () => {
     setModalIsOpen(false);
     setSelectedBreed(null);
+    document.body.style.overflow = 'auto'; // 모달이 닫혔을 때 스크롤 허용
   };
 
   return (
     <>
       <Container>
-        <h1>Dog Breeds</h1>
         <DescriptionSection />
         <Grid>
           {displayedBreeds.map((breed, index) => (
             <DogCard 
               key={breed.id} 
               breed={breed}
+              onClick={openModal}
               ref={displayedBreeds.length === index + 1 ? lastBreedElementRef : null}
             />
           ))}
