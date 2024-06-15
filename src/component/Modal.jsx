@@ -32,7 +32,7 @@ const Bar = styled.div`
   height: 12px;
   background-color: ${props => {
     const numericWidth = parseFloat(props.width);
-    if (props.reverse) {
+    if (props.reverse === "true") {
       if (numericWidth <= 40) return '#4caf50';
       if (numericWidth <= 75) return '#FFC924';
       return '#FF4742';
@@ -57,8 +57,8 @@ const CustomModalContainer = styled.div`
   max-width: 600px;
   margin: auto;
   padding: 20px;
-  overflow-y: auto; /* 세로 스크롤 가능하게 설정 */
-  max-height: 80vh; /* 뷰포트 높이에 맞게 설정 */
+  overflow-y: auto;
+  max-height: 80vh;
 `;
 
 const CustomModal = ({ isOpen, onRequestClose, breed }) => (
@@ -74,9 +74,9 @@ const CustomModal = ({ isOpen, onRequestClose, breed }) => (
         borderRadius: '10px',
         overflow: 'hidden',
         width: '90%',
-        maxHeight: '90vh', // 세로 스크롤 가능하게 설정
+        maxHeight: '90vh',
       },
-      overlay:{
+      overlay: {
         zIndex: 100
       }
     }}
@@ -158,28 +158,28 @@ const CustomModal = ({ isOpen, onRequestClose, breed }) => (
           <Emoji>🪮</Emoji>
           <Label>털 빠짐 정도:</Label>
           <BarWrapper>
-            <Bar width={`${breed.sheddingLevel * 20}%`} reverse />
+            <Bar width={`${breed.sheddingLevel * 20}%`} reverse="true" />
           </BarWrapper>
         </BarContainer>
         <BarContainer>
           <Emoji>🧼</Emoji>
           <Label>그루밍 필요도:</Label>
           <BarWrapper>
-            <Bar width={`${breed.groomingLevel * 20}%`} reverse />
+            <Bar width={`${breed.groomingLevel * 20}%`} reverse="true" />
           </BarWrapper>
         </BarContainer>
         <BarContainer>
           <Emoji>🗣️</Emoji>
           <Label>짖는 수준:</Label>
           <BarWrapper>
-            <Bar width={`${breed.barkingLevel * 20}%`} reverse />
+            <Bar width={`${breed.barkingLevel * 20}%`} reverse="true" />
           </BarWrapper>
         </BarContainer>
         <BarContainer>
           <Emoji>💧</Emoji>
           <Label>침 흘림 수준:</Label>
           <BarWrapper>
-            <Bar width={`${breed.droolingLevel * 20}%`} reverse />
+            <Bar width={`${breed.droolingLevel * 20}%`} reverse="true" />
           </BarWrapper>
         </BarContainer>
       </BarSection>

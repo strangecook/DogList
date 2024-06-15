@@ -13,36 +13,36 @@ const Overlay = styled.div`
   transition: opacity 0.3s ease-in-out;
   display: flex;
   flex-direction: column;
-  justify-content: center; /* 가운데 정렬 */
+  justify-content: center;
   align-items: center;
   color: #f5f5f5;
   border-radius: 8px;
-  padding: 10px; /* 내부 여백 추가 */
+  padding: 10px;
   box-sizing: border-box;
 `;
 
 const BarContainer = styled.div`
-  width: 100%; /* 간격을 주기 위해 width를 줄임 */
+  width: 100%;
   margin: 3px 0;
   font-family: 'Nanum Gothic', sans-serif;
-  text-align: left; /* 텍스트를 왼쪽 정렬 */
-  display: flex; /* 이모티콘과 텍스트를 나란히 배치 */
+  text-align: left;
+  display: flex;
   align-items: center;
-  font-size: 0.9em; /* 텍스트 크기 줄이기 */
-  position: relative; /* 툴팁을 위한 상대 위치 */
+  font-size: 0.9em;
+  position: relative;
 `;
 
 const Emoji = styled.span`
-  margin-right: 8px; /* 이모티콘과 텍스트 사이의 간격 */
+  margin-right: 8px;
 `;
 
 const BarWrapper = styled.div`
   width: 100%;
-  background-color: #333; /* 바 배경색 추가 */
+  background-color: #333;
   border-radius: 5px;
   overflow: hidden;
   margin-top: 3px;
-  position: relative; /* 툴팁을 위한 상대 위치 */
+  position: relative;
 `;
 
 const Bar = styled.div`
@@ -50,27 +50,27 @@ const Bar = styled.div`
   height: 12px;
   background-color: ${props => {
     const numericWidth = parseFloat(props.width);
-    if (props.reverse) {
-      if (numericWidth <= 40) return '#4caf50'; // Green (0%-50%)
-      if (numericWidth <= 75) return '#FFC924'; // Yellow (51%-75%)
-      return '#FF4742'; // Red (76%-100%)
+    if (props.reverse === "true") {
+      if (numericWidth <= 40) return '#4caf50';
+      if (numericWidth <= 75) return '#FFC924';
+      return '#FF4742';
     } else {
-      if (numericWidth <= 20) return '#FF4742'; // Red
-      if (numericWidth <= 50) return '#FFC924'; // Yellow
-      return '#4caf50'; // Green
+      if (numericWidth <= 20) return '#FF4742';
+      if (numericWidth <= 50) return '#FFC924';
+      return '#4caf50';
     }
   }};
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  transition: width 0.5s ease-in-out; /* 채워지는 애니메이션 */
+  transition: width 0.5s ease-in-out;
 `;
 
 const InfoIcon = styled.span`
-  margin-left: 8px; /* 바와 이모티콘 사이의 간격 */
+  margin-left: 8px;
   cursor: pointer;
   position: relative;
   display: inline-block;
-  background: rgba(255, 255, 255, 0.3);; /* 흰색 배경 추가 */
+  background: rgba(255, 255, 255, 0.3);
   padding: 2px 5px;
   border-radius: 20px;
   z-index: 10;
@@ -81,21 +81,21 @@ const InfoIcon = styled.span`
     top: -5px;
     left: 105%;
     transform: translateX(0);
-    background: rgba(0, 0, 0, 0.9); /* 배경색을 더 진하게 */
+    background: rgba(0, 0, 0, 0.9);
     color: #fff;
     padding: 8px;
     border-radius: 5px;
     font-size: 0.8em;
-    white-space: pre-wrap; /* 줄바꿈 허용 */
-    width: 250px; /* 최대 너비 설정 */
-    z-index: 100; /* z-index 설정 */
+    white-space: pre-wrap;
+    width: 250px;
+    z-index: 100;
   }
 `;
 
 const BarSection = styled.div`
-  width: 100%; /* 간격을 주기 위해 width를 줄임 */
-  margin: 5px 0; /* 상하 간격을 최소화 */
-  padding: 0 5px; /* 좌우 패딩을 추가 */
+  width: 100%;
+  margin: 5px 0;
+  padding: 0 5px;
 `;
 
 const FixedImageContainer = styled(ImageContainer)`
@@ -108,7 +108,6 @@ const FixedImageContainer = styled(ImageContainer)`
 export const DogCard = forwardRef(({ breed, onClick }, ref) => {
   const [hovered, setHovered] = useState(false);
 
-  // 특성 평균 계산
   const averageChildFriendly = (breed.goodWithYoungChildren + breed.affectionWithFamily) / 2;
   const averageDogFriendly = (breed.goodWithOtherDogs + breed.opennessToStrangers) / 2;
   const averageTrainability = (breed.trainabilityLevel + breed.adaptabilityLevel) / 2;
@@ -172,7 +171,7 @@ export const DogCard = forwardRef(({ breed, onClick }, ref) => {
               <InfoIcon tooltip={`이 값은 강아지의 털 관리 필요성 및 털 빠짐 정도를 합산한 후 평균을 구한 것입니다. 높은 값일수록 강아지의 털 관리가 더 많이 필요하고, 털이 많이 빠지는 경향이 있습니다.`}>ℹ️</InfoIcon>
             </BarContainer>
             <BarWrapper>
-              <Bar width={`${averageGroomingLevel * 20}%`} reverse />
+              <Bar width={`${averageGroomingLevel * 20}%`} reverse="true" />
             </BarWrapper>
           </BarSection>
           <BarSection>

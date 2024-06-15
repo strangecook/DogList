@@ -30,6 +30,54 @@ export const Card = styled.div`
   }
 `;
 
+export const FilterSection = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+`;
+
+export const Dropdown = styled.select`
+  padding: 10px;
+  margin: 0 10px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: border-color 0.3s ease;
+
+  &:focus {
+    border-color: #4caf50;
+    outline: none;
+  }
+`;
+
+export const SearchBar = styled.input`
+  padding: 10px;
+  margin: 0 10px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: border-color 0.3s ease;
+  width: 90%;
+
+  &:focus {
+    border-color: #4caf50;
+    outline: none;
+  }
+`;
+export const SearchButton  = styled.button`
+  padding: 10px 20px;
+  margin-left: 10px;
+  font-size: 1em;
+  color: white;
+  background-color: #4caf50;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+`;
+
 export const ImageContainer = styled.div`
   position: relative;
   width: 100%;
@@ -85,19 +133,4 @@ export const Text = styled.p`
   font-family: 'Nanum Gothic', sans-serif; /* 폰트 적용 */
 `;
 
-export const SearchBar = styled.input`
-  width: 100%;
-  padding: 10px;
-  margin: 20px 0;
-  font-size: 1em;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: border-color 0.3s ease;
-
-  &:focus {
-    border-color: #4caf50;
-    outline: none;
-  }
-`;
 
