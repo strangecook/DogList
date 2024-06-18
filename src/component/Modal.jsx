@@ -1,6 +1,8 @@
 import React from 'react';
 import Modal from 'react-modal';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import useStore from '../store/useStore';
 
 const BarContainer = styled.div`
   display: grid;
@@ -61,7 +63,30 @@ const CustomModalContainer = styled.div`
   max-height: 80vh;
 `;
 
-const CustomModal = ({ isOpen, onRequestClose, breed }) => (
+const DetailButton = styled(Link)`
+  display: inline-block;
+  padding: 10px 20px;
+  margin-top: 20px;
+  background-color: #007BFF;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+  text-align: center;
+  &:hover {
+    background-color: #0056b3;
+  }
+`;
+
+const CustomModal = ({ isOpen, onRequestClose, breed }) => {
+
+  const setSelectedBreed = useStore(state => state.setSelectedBreed);
+
+
+  const handleDetailButtonClick = () => {
+    setSelectedBreed(breed);
+  };
+  
+return(
   <Modal 
     isOpen={isOpen} 
     onRequestClose={onRequestClose} 
@@ -187,15 +212,18 @@ const CustomModal = ({ isOpen, onRequestClose, breed }) => (
         <li>품종 그룹: {breed.breedGroup}</li>
         <li>털 길이: {breed.coatLength}</li>
         <li>털 타입: {breed.coatType}</li>
-        <li>키: {breed.height}</li>
+        <li>키: {breed.height}</li> 
         <li>수명: {breed.lifeExpectancy}</li>
         <li>기원: {breed.origin}</li>
         <li>크기: {breed.size}</li>
-        <li>체중: {breed.weight}</li>
+        <li>체중: {breed.weight}</li>     
       </ul>
       <p>{breed.description}</p>
+      <DetailButton to={`/breeds/${breed.englishName.toLowerCase()}`} onClick={handleDetailButtonClick}>
+          자세한 정보 보러가기
+        </DetailButton>
     </CustomModalContainer>
   </Modal>
 );
-
+}
 export default CustomModal;

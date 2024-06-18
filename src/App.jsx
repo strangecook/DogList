@@ -7,6 +7,7 @@ import Login from './Routes/login';
 import { createGlobalStyle } from 'styled-components';
 import AnimatedDog from './component/AnimatedDog';
 import { auth } from './firebase';
+import BreedDetail from './component/BreedDetail';
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
       {
         path: "Login",
         element: <Login />
+      },
+      {
+        path: "breeds/:breedName",
+        element: <BreedDetail />
       }
     ]
   },

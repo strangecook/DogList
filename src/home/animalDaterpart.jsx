@@ -20,6 +20,8 @@ const App = () => {
   const [isSearchClicked, setIsSearchClicked] = useState(false);
   const breedsPerPage = 20;
 
+  const previousOverflow = useRef(''); // 추가
+
   Modal.setAppElement('#root'); // react-modal의 App 요소 설정
 
   const fetchDogApiData = async () => {
@@ -88,23 +90,24 @@ const App = () => {
     if (isFetching) return;
     if (observer.current) observer.current.disconnect();
     observer.current = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting && !isFetching) {
+      if (entries[0].isIntersecting && !isFetching && displayedBreeds.length < allBreeds.length) {
         loadMoreBreeds();
       }
     });
     if (node) observer.current.observe(node);
-  }, [isFetching, loadMoreBreeds]);
+  }, [isFetching, loadMoreBreeds, displayedBreeds.length, allBreeds.length]);
 
   const openModal = (breed) => {
+    previousOverflow.current = document.body.style.overflow; // 현재 overflow 저장
+    document.body.style.overflow = 'hidden';
     setSelectedBreed(breed);
     setModalIsOpen(true);
-    document.body.style.overflow = 'hidden';
   };
 
   const closeModal = () => {
+    document.body.style.overflow = previousOverflow.current; // 이전 overflow 복구
     setModalIsOpen(false);
     setSelectedBreed(null);
-    document.body.style.overflow = 'auto';
   };
 
   const handleFilterChange = useCallback(() => {
@@ -125,7 +128,15 @@ const App = () => {
       filteredBreeds = filteredBreeds.filter(breed => breed.breedGroup.toLowerCase() === groupFilter.toLowerCase());
     }
 
-    setDisplayedBreeds(filteredBreeds.slice(0, breedsPerPage));
+    // 중복 제거
+    const uniqueFilteredBreeds = filteredBreeds.reduce((acc, breed) => {
+      if (!acc.find(b => b.id === breed.id)) {
+        acc.push(breed);
+      }
+      return acc;
+    }, []);
+
+    setDisplayedBreeds(uniqueFilteredBreeds.slice(0, breedsPerPage));
   }, [allBreeds, breedFilter, sizeFilter, groupFilter, breedsPerPage]);
 
   useEffect(() => {
@@ -134,6 +145,13 @@ const App = () => {
       setIsSearchClicked(false);
     }
   }, [isSearchClicked, handleFilterChange]);
+
+  // useEffect 추가: 컴포넌트 언마운트 시 스크롤 복구
+  useEffect(() => {
+    return () => {
+      document.body.style.overflow = previousOverflow.current;
+    };
+  }, []);
 
   return (
     <>

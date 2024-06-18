@@ -4,6 +4,7 @@
   "private": true,
   "main": "src/index.jsx",
   "dependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.14.5",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -21,7 +22,7 @@
     "react-tooltip": "^5.26.4",
     "styled-components": "^6.1.10",
     "web-vitals": "^2.1.4",
-     "@babel/plugin-proposal-private-property-in-object": "^7.14.5"
+    "zustand": "^4.5.2"
   },
   "scripts": {
     "start": "react-scripts start",
