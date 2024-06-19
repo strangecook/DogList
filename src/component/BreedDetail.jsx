@@ -1,5 +1,4 @@
-// components/BreedDetail.js
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
@@ -38,6 +37,11 @@ const GraphContainer = styled.div`
 
 const BreedDetail = () => {
   const selectedBreed = useStore(state => state.selectedBreed);
+
+  useEffect(() => {
+    // 컴포넌트가 마운트될 때 스크롤 위치를 제일 위로 설정
+    window.scrollTo(0, 0);
+  }, []);
 
   if (!selectedBreed) {
     return <DetailContainer>해당 강아지의 정보를 찾을 수 없습니다.</DetailContainer>;

@@ -21,6 +21,7 @@ const App = () => {
   const breedsPerPage = 20;
 
   const previousOverflow = useRef(''); // 추가
+  const scrollPosition = useRef(0); // 스크롤 위치 저장
 
   Modal.setAppElement('#root'); // react-modal의 App 요소 설정
 
@@ -99,6 +100,7 @@ const App = () => {
 
   const openModal = (breed) => {
     previousOverflow.current = document.body.style.overflow; // 현재 overflow 저장
+    scrollPosition.current = window.scrollY; // 현재 스크롤 위치 저장
     document.body.style.overflow = 'hidden';
     setSelectedBreed(breed);
     setModalIsOpen(true);
@@ -106,6 +108,7 @@ const App = () => {
 
   const closeModal = () => {
     document.body.style.overflow = previousOverflow.current; // 이전 overflow 복구
+    window.scrollTo(0, scrollPosition.current); // 이전 스크롤 위치로 복구
     setModalIsOpen(false);
     setSelectedBreed(null);
   };
@@ -150,6 +153,7 @@ const App = () => {
   useEffect(() => {
     return () => {
       document.body.style.overflow = previousOverflow.current;
+      window.scrollTo(0, scrollPosition.current);
     };
   }, []);
 
