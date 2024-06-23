@@ -7,6 +7,7 @@ import { db } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import { DogCard } from './dogCard';
 import Modal from 'react-modal';
+import fetchDogApiKey from '../dataPatch/fetchDogApiKey';
 
 const App = () => {
   const [allBreeds, setAllBreeds] = useState([]);
@@ -27,8 +28,12 @@ const App = () => {
 
   const fetchDogApiData = async () => {
     try {
+      const apiKey = await fetchDogApiKey(); // Firestore에서 API 키를 가져옴
+      if (!apiKey) {
+        throw new Error('No API key available');
+      }
       const response = await axios.get('https://api.thedogapi.com/v1/breeds', {
-        headers: { 'x-api-key': process.env.REACT_APP_API_KEY }
+        headers: { 'x-api-key': apiKey }
       });
       return response.data;
     } catch (error) {
@@ -51,7 +56,7 @@ const App = () => {
         const mergedData = breedsData.map(breed => {
           const matchingDogApiData = dogApiData.find(dog => dog.name.toLowerCase() === breed.englishName.toLowerCase());
           const matchingImage = imagesData.find(image => image.dog_name.toLowerCase() === breed.englishName.toLowerCase());
-          
+
           if (matchingDogApiData) {
             return { ...breed, image: { url: matchingDogApiData.image.url } };
           } else if (matchingImage) {
@@ -117,7 +122,7 @@ const App = () => {
     let filteredBreeds = allBreeds;
 
     if (breedFilter !== '') {
-      filteredBreeds = filteredBreeds.filter(breed => 
+      filteredBreeds = filteredBreeds.filter(breed =>
         breed.englishName.toLowerCase().includes(breedFilter.toLowerCase()) ||
         breed.koreanName.toLowerCase().includes(breedFilter.toLowerCase())
       );
@@ -161,11 +166,11 @@ const App = () => {
     <>
       <Container>
         <DescriptionSection />
-        <SearchBar 
-          type="text" 
-          placeholder="한국어나 영어로 종을 검색하세요" 
-          value={breedFilter} 
-          onChange={(e) => setBreedFilter(e.target.value)} 
+        <SearchBar
+          type="text"
+          placeholder="한국어나 영어로 종을 검색하세요"
+          value={breedFilter}
+          onChange={(e) => setBreedFilter(e.target.value)}
         />
         <SearchButton onClick={() => setIsSearchClicked(true)}>Search</SearchButton>
         <FilterSection>
@@ -185,8 +190,8 @@ const App = () => {
         </FilterSection>
         <Grid>
           {displayedBreeds.map((breed, index) => (
-            <DogCard 
-              key={`${breed.id}-${index}`} 
+            <DogCard
+              key={`${breed.id}-${index}`}
               breed={breed}
               onClick={openModal}
               ref={displayedBreeds.length === index + 1 ? lastBreedElementRef : null}
@@ -195,10 +200,10 @@ const App = () => {
         </Grid>
       </Container>
       {selectedBreed && (
-        <CustomModal 
-          isOpen={modalIsOpen} 
-          onRequestClose={closeModal} 
-          breed={selectedBreed} 
+        <CustomModal
+          isOpen={modalIsOpen}
+          onRequestClose={closeModal}
+          breed={selectedBreed}
         />
       )}
       {isFetching && <div>Loading more breeds...</div>}
