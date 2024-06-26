@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { NaviBar } from './LoginNaviCss';
-import localImage from '../Pictures/free-icon-dog-2138611.png';
-import hoveredLocalImage from '../Pictures/free-icon-dog-2317843.png';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { NavBar } from './LoginNaviCss';
+import pawImage from '../Pictures/dog-paw.png';
 import { auth } from '../firebase';
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 
 function LoginNavi() {
     const navigate = useNavigate();
+    const location = useLocation();
     const [isHovered, setIsHovered] = useState(false);
     const [isLogoHovered, setIsLogoHovered] = useState(false);
     const [currentUser, setCurrentUser] = useState(null);
@@ -17,16 +17,17 @@ function LoginNavi() {
             setCurrentUser(user);
         });
 
-        // Clean up the subscription on unmount
         return () => unsubscribe();
     }, []);
 
     const handleMouseEnter = () => {
         setIsHovered(true);
     };
+
     const handleMouseLeave = () => {
         setIsHovered(false);
     };
+
     const handleLogoMouseEnter = () => {
         setIsLogoHovered(true);
     };
@@ -44,41 +45,33 @@ function LoginNavi() {
             await signOut(auth);
             navigate('/');
         } catch (error) {
-            console.error("Logout failed", error);
+            console.error('Logout failed', error);
         }
     };
 
     return (
-        <>
-            <NaviBar>
-                <div className='naviDivLeft'>
-                    {
-                        isLogoHovered
-                            ?
-                            <span
-                                className='mainHoverImageSpan'
-                                onMouseEnter={handleLogoMouseEnter}
-                                onMouseLeave={handleLogoMouseLeave}
-                            >
-                                <Link to="/">
-                                    <img className='MainImage' src={hoveredLocalImage} alt="Local" />
-                                </Link>
-                            </span>
-                            :
-                            <span
-                                className='mainImageSpan'
-                                onMouseEnter={handleLogoMouseEnter}
-                                onMouseLeave={handleLogoMouseLeave}
-                            >
-                                <Link to="/">
-                                    <img className='MainImage' src={localImage} alt="Local" />
-                                </Link>
-                            </span>
-                    }
-                </div>
-                <div className='naviDivRight'>
-                    {
-                        currentUser ? 
+        <NavBar>
+            <div className='naviDivLeft'>
+                <Link to="/">
+                    <span
+                        className={isLogoHovered ? 'mainHoverImageSpan' : 'mainImageSpan'}
+                        onMouseEnter={handleLogoMouseEnter}
+                        onMouseLeave={handleLogoMouseLeave}
+                    >
+                        <img className='MainImage' src={pawImage} alt="Paw Icon" />
+                    </span>
+                </Link>
+                <Link to="/" className="navTitle">Dog List</Link>
+            </div>
+            <div className='naviDivCenter'>
+                <Link to="/" className={`navLink ${location.pathname === '/' ? 'active' : ''}`}>홈</Link>
+                <Link to="/usage" className={`navLink ${location.pathname === '/usage' ? 'active' : ''}`}>사용 설명</Link>
+                <Link to="/license" className={`navLink ${location.pathname === '/license' ? 'active' : ''}`}>라이센스</Link>
+                <Link to="/contact" className={`navLink ${location.pathname === '/contact' ? 'active' : ''}`}>개발자 문의</Link>
+            </div>
+            <div className='naviDivRight'>
+                {
+                    currentUser ?
                         <span
                             onClick={handleLogout}
                             className={isHovered ? 'naviLoginButtonHovered' : 'naviLoginButton'}
@@ -86,7 +79,7 @@ function LoginNavi() {
                             onMouseLeave={handleMouseLeave}
                         > 로그아웃
                         </span>
-                        : 
+                        :
                         <span
                             onClick={goToLoginPage}
                             className={isHovered ? 'naviLoginButtonHovered' : 'naviLoginButton'}
@@ -94,10 +87,9 @@ function LoginNavi() {
                             onMouseLeave={handleMouseLeave}
                         > 로그인페이지
                         </span>
-                    }
-                </div>
-            </NaviBar>
-        </>
+                }
+            </div>
+        </NavBar>
     );
 }
 
