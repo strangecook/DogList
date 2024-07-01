@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import dogLogoImage from '../Pictures/anna-dudkova-urs_y9NwFcc-unsplash.avif';
+import dogExImage from '../Pictures/DALL·E 2024-06-29 17.00.47 - A picturesque park scene during a calm afternoon with a few dog breeds playing and running around. The sunlight is soft and gentle, casting a warm glo.webp'
 import { DescriptionCover, Dogimage, Context, Notification } from './DescriptionpageCss';
 import { db } from '../firebase';
 import { collection, addDoc } from 'firebase/firestore';

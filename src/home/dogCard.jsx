@@ -105,13 +105,13 @@ const FixedImageContainer = styled(ImageContainer)`
   border-radius: 8px;
 `;
 
-export const DogCard = forwardRef(({ breed, onClick }, ref) => {
+const DogCard = forwardRef(({ breed, onClick }, ref) => {
   const [hovered, setHovered] = useState(false);
 
-  const averageChildFriendly = (breed.goodWithYoungChildren + breed.affectionWithFamily) / 2;
-  const averageDogFriendly = (breed.goodWithOtherDogs + breed.opennessToStrangers) / 2;
-  const averageTrainability = (breed.trainabilityLevel + breed.adaptabilityLevel) / 2;
-  const averageEnergy = (breed.energyLevel + breed.playfulnessLevel) / 2;
+  const averageChildFriendly = breed.affectionWithFamily
+  const averageDogFriendly = breed.goodWithOtherDogs
+  const averageTrainability = breed.trainabilityLevel
+  const averageEnergy = breed.energyLevel
   const averageGroomingLevel = (breed.groomingLevel + breed.sheddingLevel) / 2;
 
   return (
@@ -121,14 +121,14 @@ export const DogCard = forwardRef(({ breed, onClick }, ref) => {
       onClick={() => onClick(breed)}
       ref={ref}
     >
-      <FixedImageContainer>
+      <ImageContainer>
         <Image src={breed.image?.url} alt={breed.englishName} />
         <Overlay style={{ opacity: hovered ? 1 : 0 }}>
           <BarSection>
             <BarContainer>
               <Emoji>👶</Emoji>
               <Text>가족과의 친화도</Text>
-              <InfoIcon tooltip={`이 값은 강아지가 어린 자녀와 얼마나 잘 지내는지와 가족과의 애정 수준을 합산한 후 평균을 구한 것입니다. 높은 값일수록 강아지가 가족과 특히 어린 자녀들과 잘 어울리는 경향이 있습니다.`}>ℹ️</InfoIcon>
+              <InfoIcon tooltip={`이 값은 강아지가 가족과의 애정 수준을 평가한 값입니다. 높은 값일수록 강아지가 가족과 잘 어울리는 경향이 있습니다.`}>ℹ️</InfoIcon>
             </BarContainer>
             <BarWrapper>
               <Bar width={`${averageChildFriendly * 20}%`} />
@@ -138,7 +138,7 @@ export const DogCard = forwardRef(({ breed, onClick }, ref) => {
             <BarContainer>
               <Emoji>🐕</Emoji>
               <Text>친화력</Text>
-              <InfoIcon tooltip={`이 값은 강아지가 다른 반려견과 얼마나 잘 어울리는지와 낯선 사람에 대한 개방성을 합산한 후 평균을 구한 것입니다. 높은 값일수록 강아지가 다른 반려견 및 사람들과 잘 어울리는 경향이 있습니다.`}>ℹ️</InfoIcon>
+              <InfoIcon tooltip={`이 값은 강아지가 다른 반려견과 얼마나 잘 어울리는지 평가한 값입니다. 높은 값일수록 강아지가 다른 반려견들과 잘 어울리는 경향이 있습니다.`}>ℹ️</InfoIcon>
             </BarContainer>
             <BarWrapper>
               <Bar width={`${averageDogFriendly * 20}%`} />
@@ -148,7 +148,7 @@ export const DogCard = forwardRef(({ breed, onClick }, ref) => {
             <BarContainer>
               <Emoji>🎓</Emoji>
               <Text>훈련 가능성</Text>
-              <InfoIcon tooltip={`이 값은 강아지의 훈련 가능성과 환경 변화에 대한 적응성을 합산한 후 평균을 구한 것입니다. 높은 값일수록 강아지가 훈련하기 쉽고 새로운 환경에 잘 적응하는 경향이 있습니다.`}>ℹ️</InfoIcon>
+              <InfoIcon tooltip={`이 값은 강아지의 훈련 가능성을 평가한 값입니다. 높은 값일수록 강아지가 훈련하기 쉬운 경향이 있습니다.`}>ℹ️</InfoIcon>
             </BarContainer>
             <BarWrapper>
               <Bar width={`${averageTrainability * 20}%`} />
@@ -158,7 +158,7 @@ export const DogCard = forwardRef(({ breed, onClick }, ref) => {
             <BarContainer>
               <Emoji>⚡</Emoji>
               <Text>에너지 수준</Text>
-              <InfoIcon tooltip={`이 값은 강아지의 에너지 수준과 장난기 수준을 합산한 후 평균을 구한 것입니다. 높은 값일수록 강아지가 에너지가 넘치고 장난기 많은 경향이 있습니다.`}>ℹ️</InfoIcon>
+              <InfoIcon tooltip={`이 값은 강아지의 에너지 수준을 평가한 값입니다. 높은 값일수록 강아지가 에너지가 넘치는 경향이 있습니다.`}>ℹ️</InfoIcon>
             </BarContainer>
             <BarWrapper>
               <Bar width={`${averageEnergy * 20}%`} />
@@ -167,7 +167,7 @@ export const DogCard = forwardRef(({ breed, onClick }, ref) => {
           <BarSection>
             <BarContainer>
               <Emoji>🪮</Emoji>
-              <Text>털 관리 빠짐 정도</Text>
+              <Text>털 관리 및 빠짐</Text>
               <InfoIcon tooltip={`이 값은 강아지의 털 관리 필요성 및 털 빠짐 정도를 합산한 후 평균을 구한 것입니다. 높은 값일수록 강아지의 털 관리가 더 많이 필요하고, 털이 많이 빠지는 경향이 있습니다.`}>ℹ️</InfoIcon>
             </BarContainer>
             <BarWrapper>
@@ -187,7 +187,7 @@ export const DogCard = forwardRef(({ breed, onClick }, ref) => {
             </BarContainer>
           </BarSection>
         </Overlay>
-      </FixedImageContainer>
+      </ImageContainer>
       <CardContentTopLeft className="hide-on-hover">
         <Title>{breed.koreanName}</Title>
       </CardContentTopLeft>
@@ -197,3 +197,5 @@ export const DogCard = forwardRef(({ breed, onClick }, ref) => {
     </Card>
   );
 });
+
+export default DogCard;

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  padding: 50px;
+  padding: 80px;
   background-color: #f7f7f7;
   font-family: 'Nanum Gothic', sans-serif; /* 글로벌 폰트 적용 */
 `;

@@ -3,28 +3,30 @@ import styled from 'styled-components';
 export let DescriptionCover = styled.div`
   width: 100vw;
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  /* padding: 20px; */
 `;
 
 export let Dogimage = styled.img`
+  width: 100%;
   height: auto;
-  width: 100vw;
-  background-size: cover;
-  background-position: 0 -25px;
+  object-fit: cover;
 `;
 
 export let Context = styled.div`
   position: absolute;
-  top: 80%;
-  left: 30%;
-  height: 100%;
-  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 10%;
+  transform: translateY(-50%);
+  text-align: left;
+  color: #fff;
 
   .contextH1 {
     white-space: pre-wrap;
-    font-size: 56px;
-    line-height: 1;
-    color: #fff;
-    text-transform: initial;
+    font-size: 3vw;
     line-height: 1.2em;
     -webkit-text-stroke-width: 1.5px;
     -webkit-text-stroke-color: black;
@@ -32,82 +34,82 @@ export let Context = styled.div`
 
   .contextH3 {
     white-space: pre-wrap;
-    font-weight: 500;
+    font-size: 1.5vw;
     margin-top: 0;
-    font-size: 21px;
     margin-bottom: 14px;
-    padding-right: 56px;
-    color: #fff;
     -webkit-text-stroke-width: 0.3px;
     -webkit-text-stroke-color: black;
   }
 
   .emailcontainer {
-    width: 50%;
-    max-width: 350px;
     background-color: #fff;
     border-radius: 10px;
-    padding: 7px;
-    border: 1px solid;
-  }
-
-  .buttonNormal {
-    margin-bottom: 14px;
-    padding-top: 14px;
-    padding-bottom: 14px;
-    background-color: #4caf50;
-    margin: 10px;
-    border-radius: 10px;
-    text-align: center;
-    color: white;
-    -webkit-text-stroke-width: 0.03px;
-    -webkit-text-stroke-color: black;
-    border: solid 1px;
-    cursor: pointer;
-    font-weight: bold;
-    width: 95%;
-    transition: all 0.3s ease;
-  }
-
-  .buttonHovered {
-    margin-bottom: 14px;
-    padding-top: 14px;
-    padding-bottom: 14px;
-    background-color: white;
-    margin: 10px;
-    border-radius: 10px;
-    text-align: center;
-    color: #4caf50;
-    -webkit-text-stroke-width: 0.03px;
-    -webkit-text-stroke-color: black;
-    border: solid 1px;
-    cursor: pointer;
-    font-weight: bold;
-    width: 95%;
-    transition: all 0.3s ease;
+    padding: 15px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+    align-items: center;
+    border: 1px solid #ccc;
   }
 
   .emaildiv {
-    margin: 10px;
+    width: 100%;
 
     .emailInput {
       width: 100%;
-      margin: auto;
+      padding: 10px;
       border: 0;
-      padding: 7px 0;
       border-bottom: 2px solid #ccc;
       font-size: 1.2rem;
     }
 
     .emailInput:focus {
-      width: 100%;
-      margin: auto;
-      border: 0;
-      padding: 7px 0;
-      border-bottom: 2px solid #ccc;
-      transition: 0.4s;
       border-color: #4caf50;
       outline: none;
+      transition: border-color 0.3s ease;
+    }
+  }
+
+  .buttonNormal,
+  .buttonHovered {
+    padding: 10px 20px;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .buttonNormal {
+    background-color: #4caf50;
+    color: white;
+    border: solid 1px;
+  }
+
+  .buttonHovered {
+    background-color: white;
+    color: #4caf50;
+    border: solid 1px;
+  }
+
+  @media (max-width: 768px) {
+    left: 5%;
+    .contextH1 {
+      font-size: 6vw;
+    }
+
+    .contextH3 {
+      font-size: 3vw;
+    }
+
+    .emailcontainer {
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+
+    .buttonNormal,
+    .buttonHovered {
+      width: 100%;
     }
   }
 `;
@@ -120,4 +122,8 @@ export let Notification = styled.p`
   width: 50%;
   max-width: 350px;
   padding: 7px;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `;

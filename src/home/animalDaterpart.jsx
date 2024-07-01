@@ -1,214 +1,126 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
-import axios from 'axios';
-import { Container, Grid, FilterSection, Dropdown, SearchBar, SearchButton } from './animalDaterPartCss';
-import DescriptionSection from './DescriptionSection';
+// src/components/AnimalDaterPart.js
+import React, { useEffect, useState, useCallback, useRef } from 'react';
+import { Container, Grid } from './animalDaterPartCss';
+import DogCard from './dogCard';
+import { fetchAndStoreBreeds, getBreedsData } from '../dataPatch/fetchAndStoreBreeds';
 import CustomModal from '../component/Modal';
-import { db } from '../firebase';
-import { collection, getDocs } from 'firebase/firestore';
-import { DogCard } from './dogCard';
-import Modal from 'react-modal';
-import fetchDogApiKey from '../dataPatch/fetchDogApiKey';
+import Filters from '../component/Filters';
+import useStore from '../store/useStore';
 
-const App = () => {
-  const [allBreeds, setAllBreeds] = useState([]);
+const AnimalDaterPart = () => {
+  const [breedsData, setBreedsData] = useState(null);
   const [displayedBreeds, setDisplayedBreeds] = useState([]);
-  const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedBreed, setSelectedBreed] = useState(null);
-  const [isFetching, setIsFetching] = useState(false);
-  const [breedFilter, setBreedFilter] = useState('');
-  const [sizeFilter, setSizeFilter] = useState('all');
-  const [groupFilter, setGroupFilter] = useState('all');
-  const [isSearchClicked, setIsSearchClicked] = useState(false);
-  const breedsPerPage = 20;
-
-  const previousOverflow = useRef(''); // 추가
-  const scrollPosition = useRef(0); // 스크롤 위치 저장
-
-  Modal.setAppElement('#root'); // react-modal의 App 요소 설정
-
-  const fetchDogApiData = async () => {
-    try {
-      const apiKey = await fetchDogApiKey(); // Firestore에서 API 키를 가져옴
-      if (!apiKey) {
-        throw new Error('No API key available');
-      }
-      const response = await axios.get('https://api.thedogapi.com/v1/breeds', {
-        headers: { 'x-api-key': apiKey }
-      });
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching dog API data:', error);
-      return [];
-    }
-  };
-
-  const fetchBreeds = useCallback(async () => {
-    if (allBreeds.length === 0) {
-      setIsFetching(true);
-      try {
-        const dogApiData = await fetchDogApiData();
-        const querySnapshot = await getDocs(collection(db, 'dogs'));
-        const imagesSnapshot = await getDocs(collection(db, 'dogImages'));
-
-        const breedsData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        const imagesData = imagesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-        const mergedData = breedsData.map(breed => {
-          const matchingDogApiData = dogApiData.find(dog => dog.name.toLowerCase() === breed.englishName.toLowerCase());
-          const matchingImage = imagesData.find(image => image.dog_name.toLowerCase() === breed.englishName.toLowerCase());
-
-          if (matchingDogApiData) {
-            return { ...breed, image: { url: matchingDogApiData.image.url } };
-          } else if (matchingImage) {
-            return { ...breed, image: { url: matchingImage.webformatURL } };
-          } else {
-            return breed;
-          }
-        });
-
-        console.log('Merged Data:', mergedData); // 최종 데이터 확인
-
-        setAllBreeds(mergedData);
-        setDisplayedBreeds(mergedData.slice(0, breedsPerPage));
-      } catch (error) {
-        console.error('Error fetching breeds:', error);
-      }
-      setIsFetching(false);
-    }
-  }, [allBreeds.length, breedsPerPage]);
-
-  useEffect(() => {
-    fetchBreeds();
-  }, [fetchBreeds]);
-
-  const loadMoreBreeds = useCallback(() => {
-    setIsFetching(true);
-    setDisplayedBreeds(prevBreeds => {
-      const currentLength = prevBreeds.length;
-      const moreBreeds = allBreeds.slice(currentLength, currentLength + breedsPerPage);
-      return [...prevBreeds, ...moreBreeds];
-    });
-    setIsFetching(false);
-  }, [allBreeds, breedsPerPage]);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const { storedFilters, setStoredFilters } = useStore();
+  const [filters, setFilters] = useState(storedFilters);
 
   const observer = useRef();
-  const lastBreedElementRef = useCallback(node => {
-    if (isFetching) return;
-    if (observer.current) observer.current.disconnect();
-    observer.current = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting && !isFetching && displayedBreeds.length < allBreeds.length) {
-        loadMoreBreeds();
-      }
-    });
-    if (node) observer.current.observe(node);
-  }, [isFetching, loadMoreBreeds, displayedBreeds.length, allBreeds.length]);
+  const breedsPerPage = 10;
+  const [page, setPage] = useState(1);
 
-  const openModal = (breed) => {
-    previousOverflow.current = document.body.style.overflow; // 현재 overflow 저장
-    scrollPosition.current = window.scrollY; // 현재 스크롤 위치 저장
-    document.body.style.overflow = 'hidden';
+  useEffect(() => {
+    const fetchData = async () => {
+      const localBreedsData = getBreedsData();
+      if (localBreedsData) {
+        console.log('Using localStorage data');
+        setBreedsData(localBreedsData);
+      } else {
+        console.log('Fetching new data...');
+        await fetchAndStoreBreeds();
+        const newBreedsData = getBreedsData();
+        setBreedsData(newBreedsData);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handleCardClick = (breed) => {
     setSelectedBreed(breed);
     setModalIsOpen(true);
   };
 
-  const closeModal = () => {
-    document.body.style.overflow = previousOverflow.current; // 이전 overflow 복구
-    window.scrollTo(0, scrollPosition.current); // 이전 스크롤 위치로 복구
+  const handleCloseModal = () => {
     setModalIsOpen(false);
     setSelectedBreed(null);
   };
 
-  const handleFilterChange = useCallback(() => {
-    let filteredBreeds = allBreeds;
+  const filterBreeds = useCallback(() => {
+    if (!breedsData) return;
 
-    if (breedFilter !== '') {
-      filteredBreeds = filteredBreeds.filter(breed =>
-        breed.englishName.toLowerCase().includes(breedFilter.toLowerCase()) ||
-        breed.koreanName.toLowerCase().includes(breedFilter.toLowerCase())
-      );
+    let filtered = Object.values(breedsData);
+
+    if (filters.size !== 'all') {
+      filtered = filtered.filter(breed => breed.size === filters.size);
+    }
+    if (filters.coatType !== 'all') {
+      filtered = filtered.filter(breed => breed.coatType === filters.coatType);
+    }
+    if (filters.affectionWithFamily !== 'all') {
+      filtered = filtered.filter(breed => breed.affectionWithFamily === Number(filters.affectionWithFamily));
+    }
+    if (filters.goodWithOtherDogs !== 'all') {
+      filtered = filtered.filter(breed => breed.goodWithOtherDogs === Number(filters.goodWithOtherDogs));
+    }
+    if (filters.trainabilityLevel !== 'all') {
+      filtered = filtered.filter(breed => breed.trainabilityLevel === Number(filters.trainabilityLevel));
+    }
+    if (filters.energyLevel !== 'all') {
+      filtered = filtered.filter(breed => breed.energyLevel === Number(filters.energyLevel));
+    }
+    if (filters.sheddingLevel !== 'all') {
+      filtered = filtered.filter(breed => breed.sheddingLevel === Number(filters.sheddingLevel));
     }
 
-    if (sizeFilter !== 'all') {
-      filteredBreeds = filteredBreeds.filter(breed => breed.size.toLowerCase() === sizeFilter.toLowerCase());
-    }
+    localStorage.setItem('filteredBreeds', JSON.stringify(filtered));
+    setDisplayedBreeds(filtered.slice(0, breedsPerPage * page));
+  }, [breedsData, filters, page]);
 
-    if (groupFilter !== 'all') {
-      filteredBreeds = filteredBreeds.filter(breed => breed.breedGroup.toLowerCase() === groupFilter.toLowerCase());
-    }
+  useEffect(() => {
+    filterBreeds();
+  }, [filters, breedsData, filterBreeds, page]);
 
-    // 중복 제거
-    const uniqueFilteredBreeds = filteredBreeds.reduce((acc, breed) => {
-      if (!acc.find(b => b.id === breed.id)) {
-        acc.push(breed);
+  const loadMoreBreeds = () => {
+    setPage((prevPage) => prevPage + 1);
+  };
+
+  const lastBreedElementRef = useCallback((node) => {
+    if (observer.current) observer.current.disconnect();
+    observer.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        loadMoreBreeds();
       }
-      return acc;
-    }, []);
-
-    setDisplayedBreeds(uniqueFilteredBreeds.slice(0, breedsPerPage));
-  }, [allBreeds, breedFilter, sizeFilter, groupFilter, breedsPerPage]);
-
-  useEffect(() => {
-    if (isSearchClicked) {
-      handleFilterChange();
-      setIsSearchClicked(false);
-    }
-  }, [isSearchClicked, handleFilterChange]);
-
-  // useEffect 추가: 컴포넌트 언마운트 시 스크롤 복구
-  useEffect(() => {
-    return () => {
-      document.body.style.overflow = previousOverflow.current;
-      window.scrollTo(0, scrollPosition.current);
-    };
+    });
+    if (node) observer.current.observe(node);
   }, []);
 
   return (
-    <>
-      <Container>
-        <DescriptionSection />
-        <SearchBar
-          type="text"
-          placeholder="한국어나 영어로 종을 검색하세요"
-          value={breedFilter}
-          onChange={(e) => setBreedFilter(e.target.value)}
-        />
-        <SearchButton onClick={() => setIsSearchClicked(true)}>Search</SearchButton>
-        <FilterSection>
-          <Dropdown value={sizeFilter} onChange={(e) => { setSizeFilter(e.target.value); setIsSearchClicked(true); }}>
-            <option value="all">All Sizes</option>
-            <option value="소형견">소형견</option>
-            <option value="중형견">중형견</option>
-            <option value="대형견">대형견</option>
-            <option value="초대형견">초대형견</option>
-          </Dropdown>
-          <Dropdown value={groupFilter} onChange={(e) => { setGroupFilter(e.target.value); setIsSearchClicked(true); }}>
-            <option value="all">All Groups</option>
-            {Array.from(new Set(allBreeds.map(breed => breed.breedGroup))).map(group => (
-              <option key={group} value={group}>{group}</option>
-            ))}
-          </Dropdown>
-        </FilterSection>
+    <Container>
+      <h1>Animal Dater Part</h1>
+      <Filters filters={filters} setFilters={setFilters} />
+      {displayedBreeds.length > 0 ? (
         <Grid>
           {displayedBreeds.map((breed, index) => (
             <DogCard
-              key={`${breed.id}-${index}`}
+              key={index}
               breed={breed}
-              onClick={openModal}
-              ref={displayedBreeds.length === index + 1 ? lastBreedElementRef : null}
+              onClick={handleCardClick}
+              ref={index === displayedBreeds.length - 1 ? lastBreedElementRef : null}
             />
           ))}
         </Grid>
-      </Container>
+      ) : (
+        <p>Loading data...</p>
+      )}
       {selectedBreed && (
         <CustomModal
           isOpen={modalIsOpen}
-          onRequestClose={closeModal}
+          onRequestClose={handleCloseModal}
           breed={selectedBreed}
         />
       )}
-      {isFetching && <div>Loading more breeds...</div>}
-    </>
+    </Container>
   );
 };
 
-export default App;
+export default AnimalDaterPart;
