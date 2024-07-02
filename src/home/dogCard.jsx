@@ -1,5 +1,8 @@
+// src/components/DogCard.js
 import React, { useState, forwardRef } from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import useStore from '../store/useStore';
 import { Card, ImageContainer, Image, CardContentTopLeft, Title, Text, CardContentBottomRight } from './animalDaterPartCss';
 
 const Overlay = styled.div`
@@ -107,21 +110,27 @@ const FixedImageContainer = styled(ImageContainer)`
 
 const DogCard = forwardRef(({ breed, onClick }, ref) => {
   const [hovered, setHovered] = useState(false);
+  const setSelectedBreed = useStore(state => state.setSelectedBreed);
 
-  const averageChildFriendly = breed.affectionWithFamily
-  const averageDogFriendly = breed.goodWithOtherDogs
-  const averageTrainability = breed.trainabilityLevel
-  const averageEnergy = breed.energyLevel
+  const handleCardClick = (breed) => {
+    setSelectedBreed(breed);
+    onClick(breed);
+  };
+
+  const averageChildFriendly = breed.affectionWithFamily;
+  const averageDogFriendly = breed.goodWithOtherDogs;
+  const averageTrainability = breed.trainabilityLevel;
+  const averageEnergy = breed.energyLevel;
   const averageGroomingLevel = (breed.groomingLevel + breed.sheddingLevel) / 2;
 
   return (
     <Card 
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      onClick={() => onClick(breed)}
+      onClick={() => handleCardClick(breed)}
       ref={ref}
     >
-      <ImageContainer>
+      <FixedImageContainer>
         <Image src={breed.image?.url} alt={breed.englishName} />
         <Overlay style={{ opacity: hovered ? 1 : 0 }}>
           <BarSection>
@@ -187,7 +196,7 @@ const DogCard = forwardRef(({ breed, onClick }, ref) => {
             </BarContainer>
           </BarSection>
         </Overlay>
-      </ImageContainer>
+      </FixedImageContainer>
       <CardContentTopLeft className="hide-on-hover">
         <Title>{breed.koreanName}</Title>
       </CardContentTopLeft>

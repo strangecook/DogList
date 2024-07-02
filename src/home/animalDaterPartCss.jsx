@@ -1,9 +1,10 @@
+// src/animalDaterPartCss.js
 import styled from 'styled-components';
 
 export const Container = styled.div`
   padding: 80px;
   background-color: #f7f7f7;
-  font-family: 'Nanum Gothic', sans-serif; /* 글로벌 폰트 적용 */
+  font-family: 'Nanum Gothic', sans-serif;
 `;
 
 export const Grid = styled.div`
@@ -15,14 +16,14 @@ export const Grid = styled.div`
 export const Card = styled.div`
   position: relative;
   background: white;
-  border-radius: 12px; /* 모서리 둥글게 */
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* 그림자 더 크게 */
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   transition: transform 0.3s, box-shadow 0.3s;
 
   &:hover {
     transform: scale(1.05);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2); /* 그림자 더 크게 */
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
   }
 
   &:hover .hide-on-hover {
@@ -51,40 +52,72 @@ export const Dropdown = styled.select`
   }
 `;
 
+export const SearchBarContainer = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  width: 100%;
+`;
+
 export const SearchBar = styled.input`
   padding: 10px;
-  margin: 0 10px;
   font-size: 1em;
   border: 1px solid #ccc;
-  border-radius: 8px;
+  border-radius: 8px 0 0 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: border-color 0.3s ease;
-  width: 90%;
-
+  width: 100%;
+  
   &:focus {
     border-color: #4caf50;
     outline: none;
   }
 `;
-export const SearchButton  = styled.button`
+
+export const SearchButton = styled.button`
   padding: 10px 20px;
-  margin-left: 10px;
   font-size: 1em;
   color: white;
   background-color: #4caf50;
   border: none;
-  border-radius: 8px;
+  border-radius: 0 8px 8px 0;
   cursor: pointer;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+`;
+
+export const AutocompleteList = styled.ul`
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 0 0 8px 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+`;
+
+export const AutocompleteItem = styled.li`
+  padding: 10px;
+  cursor: pointer;
+  &:hover {
+    background: #f0f0f0;
+  }
 `;
 
 export const ImageContainer = styled.div`
   position: relative;
   width: 100%;
   height: 0;
-  padding-bottom: 75%; /* 4:3 비율 */
-  background-color: #f7f7f7; /* 배경색 추가 */
-  border-bottom: 1px solid #e0e0e0; /* 밑줄 추가 */
+  padding-bottom: 75%;
+  background-color: #f7f7f7;
+  border-bottom: 1px solid #e0e0e0;
 `;
 
 export const Image = styled.img`
@@ -95,8 +128,8 @@ export const Image = styled.img`
   height: 100%;
   transform: translate(-50%, -50%);
   object-fit: cover;
-  object-position: center; /* 이미지를 가운데로 배치 */
-  border-radius: 12px 12px 0 0; /* 이미지 모서리 둥글게 */
+  object-position: center;
+  border-radius: 12px 12px 0 0;
 `;
 
 export const CardContentTopLeft = styled.div`
@@ -104,7 +137,7 @@ export const CardContentTopLeft = styled.div`
   top: 10px;
   left: 10px;
   color: white;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); /* 텍스트 그림자 강화 */
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
   transition: opacity 0.2s ease-in-out;
 `;
 
@@ -119,9 +152,9 @@ export const CardContentBottomRight = styled.div`
 
 export const Title = styled.h2`
   margin: 0;
-  font-size: 1.8em; /* 폰트 크기 약간 더 크게 */
-  font-weight: 700; /* 폰트 굵게 */
-  font-family: 'Nanum Gothic', sans-serif; /* 폰트 적용 */
+  font-size: 1.8em;
+  font-weight: 700;
+  font-family: 'Nanum Gothic', sans-serif;
 `;
 
 export const Text = styled.p`
@@ -129,8 +162,6 @@ export const Text = styled.p`
   font-size: 1.2em;
   -webkit-text-stroke-width: 0.3px;
   -webkit-text-stroke-color: black;
-  color: #f5f5f5; /* 텍스트 색상을 밝은 회색으로 변경 */
-  font-family: 'Nanum Gothic', sans-serif; /* 폰트 적용 */
+  color: #f5f5f5;
+  font-family: 'Nanum Gothic', sans-serif;
 `;
-
-

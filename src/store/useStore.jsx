@@ -21,6 +21,8 @@ const useStore = create((set) => ({
     set({ storedFilters: filters });
     saveToLocalStorage('storedFilters', filters);
   },
+  selectedBreed: null,
+  setSelectedBreed: (breed) => set({ selectedBreed: breed }),
 }));
 
 export default useStore;

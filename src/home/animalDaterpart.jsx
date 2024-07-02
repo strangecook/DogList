@@ -1,6 +1,6 @@
 // src/components/AnimalDaterPart.js
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { Container, Grid } from './animalDaterPartCss';
+import { Container, Grid, SearchBar, SearchButton, SearchBarContainer, AutocompleteList, AutocompleteItem } from './animalDaterPartCss';
 import DogCard from './dogCard';
 import { fetchAndStoreBreeds, getBreedsData } from '../dataPatch/fetchAndStoreBreeds';
 import CustomModal from '../component/Modal';
@@ -14,10 +14,12 @@ const AnimalDaterPart = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const { storedFilters, setStoredFilters } = useStore();
   const [filters, setFilters] = useState(storedFilters);
-
+  const [searchQuery, setSearchQuery] = useState('');
+  const [autocompleteResults, setAutocompleteResults] = useState([]);
   const observer = useRef();
   const breedsPerPage = 10;
   const [page, setPage] = useState(1);
+  const autocompleteRef = useRef(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -72,6 +74,13 @@ const AnimalDaterPart = () => {
       filtered = filtered.filter(breed => breed.sheddingLevel === Number(filters.sheddingLevel));
     }
 
+    if (filters.searchQuery && filters.searchQuery !== '') {
+      filtered = filtered.filter(breed => 
+        breed.englishName.toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
+        breed.koreanName.toLowerCase().includes(filters.searchQuery.toLowerCase())
+      );
+    }
+
     localStorage.setItem('filteredBreeds', JSON.stringify(filtered));
     setDisplayedBreeds(filtered.slice(0, breedsPerPage * page));
   }, [breedsData, filters, page]);
@@ -94,9 +103,71 @@ const AnimalDaterPart = () => {
     if (node) observer.current.observe(node);
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (autocompleteRef.current && !autocompleteRef.current.contains(event.target)) {
+        setAutocompleteResults([]);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      setFilters((prevFilters) => ({ ...prevFilters, searchQuery }));
+      setPage(1);
+      setAutocompleteResults([]);
+    }
+  };
+
+  const handleSearchButtonClick = () => {
+    setFilters((prevFilters) => ({ ...prevFilters, searchQuery }));
+    setPage(1);
+    setAutocompleteResults([]);
+  };
+
+  const handleSearchInputChange = (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    if (query !== '') {
+      const results = Object.values(breedsData).filter(breed =>
+        breed.englishName.toLowerCase().includes(query.toLowerCase()) ||
+        breed.koreanName.toLowerCase().includes(query.toLowerCase())
+      );
+      setAutocompleteResults(results.slice(0, 10)); // 자동완성 결과로 최대 10개까지만 표시
+    } else {
+      setAutocompleteResults([]);
+    }
+  };
+
   return (
     <Container>
       <h1>Animal Dater Part</h1>
+      <SearchBarContainer ref={autocompleteRef}>
+        <SearchBar
+          type="text"
+          placeholder="한국어나 영어로 종을 검색하세요"
+          value={searchQuery}
+          onChange={handleSearchInputChange}
+          onKeyPress={handleKeyPress}
+        />
+        <SearchButton onClick={handleSearchButtonClick}>Search</SearchButton>
+        {autocompleteResults.length > 0 && (
+          <AutocompleteList>
+            {autocompleteResults.map((breed, index) => (
+              <AutocompleteItem key={index} onClick={() => {
+                setSearchQuery(breed.englishName);
+                setAutocompleteResults([]);
+              }}>
+                {breed.koreanName} ({breed.englishName})
+              </AutocompleteItem>
+            ))}
+          </AutocompleteList>
+        )}
+      </SearchBarContainer>
       <Filters filters={filters} setFilters={setFilters} />
       {displayedBreeds.length > 0 ? (
         <Grid>
