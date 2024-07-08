@@ -32,7 +32,7 @@ const Label = styled.label`
 
 const filterOptions = [
   { name: 'size', label: '크기', options: ['모두', '소형견', '중형견', '대형견', '초대형견'] },
-  { name: 'coatType', label: '털 타입', options: ['모두', '짧은 털', '중간 털', '긴 털'] },
+  { name: 'coatType', label: '털 타입', options: ['모두', '뻣뻣한 털','매끈한 털','거친 털','꼬인 털','이중 털','곱슬 털','물결 털','비단 털','무모'] },
   { name: 'affectionWithFamily', label: '가족과의 애정', options: ['모두', '1', '2', '3', '4', '5'] },
   { name: 'goodWithOtherDogs', label: '다른 개와의 친화력', options: ['모두', '1', '2', '3', '4', '5'] },
   { name: 'trainabilityLevel', label: '훈련 가능성', options: ['모두', '1', '2', '3', '4', '5'] },

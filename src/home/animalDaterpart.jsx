@@ -36,15 +36,24 @@ const AnimalDaterPart = () => {
     };
     fetchData();
   }, []);
+  
+  useEffect(() => {
+    return () => {
+      // 컴포넌트 언마운트 시 스크롤 허용
+      document.body.style.overflow = 'auto';
+    };
+  }, []);
 
   const handleCardClick = (breed) => {
     setSelectedBreed(breed);
     setModalIsOpen(true);
+    document.body.style.overflow = 'hidden'; // 모달이 열렸을 때 스크롤 멈춤
   };
 
   const handleCloseModal = () => {
     setModalIsOpen(false);
     setSelectedBreed(null);
+    document.body.style.overflow = 'auto'; // 모달이 닫혔을 때 스크롤 허용
   };
 
   const filterBreeds = useCallback(() => {
@@ -55,8 +64,9 @@ const AnimalDaterPart = () => {
     if (filters.size !== 'all') {
       filtered = filtered.filter(breed => breed.size === filters.size);
     }
-    if (filters.coatType !== 'all') {
-      filtered = filtered.filter(breed => breed.coatType === filters.coatType);
+    if (filters.coatType !== 'all') {  // 기존: breed.coatType === filters.coatType
+      console.log("filters", filters)
+      filtered = filtered.filter(breed => breed.coatType.includes(filters.coatType));
     }
     if (filters.affectionWithFamily !== 'all') {
       filtered = filtered.filter(breed => breed.affectionWithFamily === Number(filters.affectionWithFamily));
@@ -137,7 +147,7 @@ const AnimalDaterPart = () => {
         breed.englishName.toLowerCase().includes(query.toLowerCase()) ||
         breed.koreanName.toLowerCase().includes(query.toLowerCase())
       );
-      setAutocompleteResults(results.slice(0, 10)); // 자동완성 결과로 최대 10개까지만 표시
+      setAutocompleteResults(results.slice(0, 5));
     } else {
       setAutocompleteResults([]);
     }
