@@ -1,7 +1,6 @@
 // src/components/DogCard.js
 import React, { useState, useEffect, forwardRef } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 import useStore from '../store/useStore';
 import { Card, ImageContainer, Image, CardContentTopLeft, Title, Text, CardContentBottomRight } from './animalDaterPartCss';
 import { ref, getDownloadURL, listAll } from 'firebase/storage';
@@ -9,14 +8,12 @@ import { storage } from '../firebase';
 
 const fetchImagesFromStorage = async (breedName) => {
   try {
-    console.log("breedName",breedName)
     const formatBreedName = (breedName) => {
       return breedName.replace(/ /g, '_');
     };
     const formattedBreedName = formatBreedName(breedName);
     const folderRef = ref(storage, `dog/${formattedBreedName}`);
     const fileList = await listAll(folderRef);
-    console.log("fileList".fileList)
 
     if (fileList.items.length > 0) {
       const imageUrls = await Promise.all(
