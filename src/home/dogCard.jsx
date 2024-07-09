@@ -1,9 +1,39 @@
 // src/components/DogCard.js
-import React, { useState, forwardRef } from 'react';
+import React, { useState, useEffect, forwardRef } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import useStore from '../store/useStore';
 import { Card, ImageContainer, Image, CardContentTopLeft, Title, Text, CardContentBottomRight } from './animalDaterPartCss';
+import { ref, getDownloadURL, listAll } from 'firebase/storage';
+import { storage } from '../firebase';
+
+const fetchImagesFromStorage = async (breedName) => {
+  try {
+    console.log("breedName",breedName)
+    const formatBreedName = (breedName) => {
+      return breedName.replace(/ /g, '_');
+    };
+    const formattedBreedName = formatBreedName(breedName);
+    const folderRef = ref(storage, `dog/${formattedBreedName}`);
+    const fileList = await listAll(folderRef);
+    console.log("fileList".fileList)
+
+    if (fileList.items.length > 0) {
+      const imageUrls = await Promise.all(
+        fileList.items.map(async (itemRef) => {
+          const url = await getDownloadURL(itemRef);
+          return url;
+        })
+      );
+      return imageUrls;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error(`Error fetching images from Storage for breed ${breedName}:`, error);
+    return null;
+  }
+};
 
 const Overlay = styled.div`
   position: absolute;
@@ -110,7 +140,19 @@ const FixedImageContainer = styled(ImageContainer)`
 
 const DogCard = forwardRef(({ breed, onClick }, ref) => {
   const [hovered, setHovered] = useState(false);
+  const [imageUrl, setImageUrl] = useState(null);
   const setSelectedBreed = useStore(state => state.setSelectedBreed);
+
+  useEffect(() => {
+    const fetchImage = async () => {
+      const images = await fetchImagesFromStorage(breed.englishName);
+      if (images && images.length > 0) {
+        setImageUrl(images[0]);
+      }
+    };
+
+    fetchImage();
+  }, [breed.englishName]);
 
   const handleCardClick = (breed) => {
     setSelectedBreed(breed);
@@ -131,7 +173,7 @@ const DogCard = forwardRef(({ breed, onClick }, ref) => {
       ref={ref}
     >
       <FixedImageContainer>
-        <Image src={breed.image?.url} alt={breed.englishName} />
+        {imageUrl && <Image src={imageUrl} alt={breed.englishName} />}
         <Overlay style={{ opacity: hovered ? 1 : 0 }}>
           <BarSection>
             <BarContainer>
