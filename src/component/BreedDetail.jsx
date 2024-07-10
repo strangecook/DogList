@@ -1,7 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import Slider from 'react-slick';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import { ref, getDownloadURL, listAll } from 'firebase/storage';
+import { storage } from '../firebase';
 import useStore from '../store/useStore';
 
 // Chart.js 구성 요소 등록
@@ -26,6 +29,8 @@ const SectionTitle = styled.h3`
 
 const Image = styled.img`
   max-width: 100%;
+  max-height: 400px;
+  width: auto;
   height: auto;
   border-radius: 10px;
   margin-bottom: 20px;
@@ -35,13 +40,106 @@ const GraphContainer = styled.div`
   margin-bottom: 30px;
 `;
 
+const SliderContainer = styled.div`
+  .slick-slide img {
+    display: block;
+    margin: auto;
+  }
+`;
+
+const LoaderDiv = styled.div`
+  max-width: 100%;
+  max-height: 400px;
+  width: auto;
+  height: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  margin-bottom: 20px;
+`;
+
+const Loader = styled.div`
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+`;
+
+const fetchImagesFromStorage = async (breedName) => {
+  try {
+    const formatBreedName = (breedName) => {
+      return breedName.replace(/ /g, '_');
+    };
+    const formattedBreedName = formatBreedName(breedName);
+    const folderRef = ref(storage, `dog/${formattedBreedName}`);
+    const fileList = await listAll(folderRef);
+
+    if (fileList.items.length > 0) {
+      const imageUrls = await Promise.all(
+        fileList.items.map(async (itemRef) => {
+          const url = await getDownloadURL(itemRef);
+          return url;
+        })
+      );
+      return imageUrls;
+    } else {
+      return [];
+    }
+  } catch (error) {
+    console.error(`Error fetching images from Storage for breed ${breedName}:`, error);
+    return [];
+  }
+};
+
+const SampleNextArrow = (props) => {
+  const { className, style, onClick } = props;
+  return (
+    <div
+      className={className}
+      style={{ ...style, display: "block", background: "rgba(0, 0, 0, 0.5)", borderRadius: "50%" }}
+      onClick={onClick}
+    />
+  );
+}
+
+const SamplePrevArrow = (props) => {
+  const { className, style, onClick } = props;
+  return (
+    <div
+      className={className}
+      style={{ ...style, display: "block", background: "rgba(0, 0, 0, 0.5)", borderRadius: "50%" }}
+      onClick={onClick}
+    />
+  );
+}
+
 const BreedDetail = () => {
   const selectedBreed = useStore(state => state.selectedBreed);
+  const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // 컴포넌트가 마운트될 때 스크롤 위치를 제일 위로 설정
     window.scrollTo(0, 0);
-  }, []);
+
+    // 사진 데이터 가져오기
+    if (selectedBreed) {
+      const fetchImages = async () => {
+        setLoading(true);
+        const imageUrls = await fetchImagesFromStorage(selectedBreed.englishName);
+        setImages(imageUrls);
+        setLoading(false);
+      };
+      fetchImages();
+    }
+  }, [selectedBreed]);
 
   if (!selectedBreed) {
     return <DetailContainer>해당 강아지의 정보를 찾을 수 없습니다.</DetailContainer>;
@@ -104,10 +202,36 @@ const BreedDetail = () => {
     ]
   };
 
+  const sliderSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    nextArrow: <SampleNextArrow />,
+    prevArrow: <SamplePrevArrow />,
+  };
+
   return (
     <DetailContainer>
       <h2>{selectedBreed.koreanName} ({selectedBreed.englishName})</h2>
-      {selectedBreed.image && <Image src={selectedBreed.image.url} alt={selectedBreed.englishName} />}
+      {loading ? (
+        <LoaderDiv>
+          <Loader />
+        </LoaderDiv>
+      ) : images.length > 1 ? (
+        <SliderContainer>
+          <Slider {...sliderSettings}>
+            {images.map((url, index) => (
+              <div key={index}>
+                <Image src={url} alt={`${selectedBreed.englishName} ${index + 1}`} />
+              </div>
+            ))}
+          </Slider>
+        </SliderContainer>
+      ) : (
+        images.length === 1 && <Image src={images[0]} alt={selectedBreed.englishName} />
+      )}
 
       <Section>
         <SectionTitle>기본 정보</SectionTitle>

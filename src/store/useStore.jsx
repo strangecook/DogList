@@ -1,14 +1,28 @@
-// store/useStore.js
+// src/store/useStore.js
 import create from 'zustand';
+import { loadFromLocalStorage, saveToLocalStorage } from '../utils/localStorage';
 
 const useStore = create((set) => ({
-  breeds: {},
-  selectedBreed: null, // 초기값을 null로 설정
-  addBreed: (breedName, breedData) => set((state) => ({
-    breeds: { ...state.breeds, [breedName.toLowerCase()]: breedData },
-  })),
-  setSelectedBreed: (breed) => set({ selectedBreed: breed }), // 바로 breed를 설정
-  getBreed: (breedName) => (state) => state.breeds[breedName.toLowerCase()],
+  storedBreeds: loadFromLocalStorage('storedBreeds') || {},
+  setStoredBreeds: (breeds) => {
+    set({ storedBreeds: breeds });
+    saveToLocalStorage('storedBreeds', breeds);
+  },
+  storedFilters: loadFromLocalStorage('storedFilters') || {
+    size: 'all',
+    coatType: 'all',
+    affectionWithFamily: 'all',
+    goodWithOtherDogs: 'all',
+    trainabilityLevel: 'all',
+    energyLevel: 'all',
+    sheddingLevel: 'all'
+  },
+  setStoredFilters: (filters) => {
+    set({ storedFilters: filters });
+    saveToLocalStorage('storedFilters', filters);
+  },
+  selectedBreed: null,
+  setSelectedBreed: (breed) => set({ selectedBreed: breed }),
 }));
 
 export default useStore;

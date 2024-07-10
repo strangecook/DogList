@@ -5,8 +5,6 @@ import Home from './Routes/home';
 import CreateAccount from './Routes/createAccount';
 import Login from './Routes/login';
 import { createGlobalStyle } from 'styled-components';
-import AnimatedDog from './component/AnimatedDog';
-import { auth } from './firebase';
 import BreedDetail from './component/BreedDetail';
 
 const router = createBrowserRouter([
@@ -45,27 +43,11 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 const App = () => {
-  const [isLoading, setIsLoading] = useState(true);
-
-  const initializing = async () => {
-    await auth.authStateReady();
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-  };
-
-  useEffect(() => {
-    initializing();
-  }, []);
 
   return (
     <>
       <GlobalStyles />
-      {isLoading ? (
-        <AnimatedDog />
-      ) : (
         <RouterProvider router={router} />
-      )}
     </>
   );
 };
