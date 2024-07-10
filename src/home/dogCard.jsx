@@ -1,6 +1,7 @@
 // src/components/DogCard.js
 import React, { useState, useEffect, forwardRef } from 'react';
 import styled from 'styled-components';
+import { ClipLoader } from 'react-spinners';
 import useStore from '../store/useStore';
 import { Card, ImageContainer, Image, CardContentTopLeft, Title, Text, CardContentBottomRight } from './animalDaterPartCss';
 import { ref, getDownloadURL, listAll } from 'firebase/storage';
@@ -138,14 +139,17 @@ const FixedImageContainer = styled(ImageContainer)`
 const DogCard = forwardRef(({ breed, onClick }, ref) => {
   const [hovered, setHovered] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
+  const [loading, setLoading] = useState(true);
   const setSelectedBreed = useStore(state => state.setSelectedBreed);
 
   useEffect(() => {
     const fetchImage = async () => {
+      setLoading(true);
       const images = await fetchImagesFromStorage(breed.englishName);
       if (images && images.length > 0) {
         setImageUrl(images[0]);
       }
+      setLoading(false);
     };
 
     fetchImage();
@@ -170,7 +174,11 @@ const DogCard = forwardRef(({ breed, onClick }, ref) => {
       ref={ref}
     >
       <FixedImageContainer>
-        {imageUrl && <Image src={imageUrl} alt={breed.englishName} />}
+        {loading ? (
+          <ClipLoader color="#4caf50" size={50} />
+        ) : (
+          imageUrl && <Image src={imageUrl} alt={breed.englishName} />
+        )}
         <Overlay style={{ opacity: hovered ? 1 : 0 }}>
           <BarSection>
             <BarContainer>

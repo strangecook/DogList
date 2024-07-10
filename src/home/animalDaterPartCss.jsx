@@ -165,3 +165,25 @@ export const Text = styled.p`
   color: #f5f5f5;
   font-family: 'Nanum Gothic', sans-serif;
 `;
+
+export const ConsonantFilterContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+`;
+
+export const ConsonantButton = styled.button`
+  padding: 10px 20px;
+  font-size: 1em;
+  color: white;
+  background-color: ${props => (props.selected ? '#4caf50' : '#9e9e9e')};
+  border: none;
+  border-radius: 8px;
+  margin: 0 5px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  
+  &:hover {
+    background-color: #4caf50;
+  }
+`;

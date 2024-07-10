@@ -13,10 +13,19 @@ const fetchBreedsFromFirestore = async () => {
 };
 
 const mergeBreedsData = async (firestoreData) => {
-  const mergedData = firestoreData.reduce((acc, breed) => {
+  // Sorting the data by Korean names in alphabetical order
+  const sortedData = firestoreData.sort((a, b) => {
+    const nameA = a.koreanName || '';
+    const nameB = b.koreanName || '';
+    return nameA.localeCompare(nameB, 'ko');
+  });
+
+  // Merging the sorted data
+  const mergedData = sortedData.reduce((acc, breed) => {
     acc[breed.englishName.toLowerCase()] = breed;
     return acc;
   }, {});
+
   return mergedData;
 };
 
