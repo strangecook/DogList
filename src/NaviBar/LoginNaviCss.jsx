@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const NavBar = styled.div`
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
@@ -9,7 +9,7 @@ export const NavBar = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 40px; /* 양 옆 padding을 40px로 설정 */
+  padding: 10px 40px;
   background-color: #272527;
 
   .naviDivLeft {
