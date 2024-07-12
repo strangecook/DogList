@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import Layout from './component/layout';
 import Home from './Routes/home';
 import CreateAccount from './Routes/createAccount';
 import Login from './Routes/login';
+import Usage from './Routes/usage';
+import Contact from './Routes/contact';
+import Profile from './Routes/Profile'
+import ProtectedRoute from './Routes/ProtectedRoute';
 import { createGlobalStyle } from 'styled-components';
 import BreedDetail from './component/BreedDetail';
 
@@ -27,6 +31,22 @@ const router = createBrowserRouter([
       {
         path: "breeds/:breedName",
         element: <BreedDetail />
+      },
+      {
+        path: "usage",
+        element: <Usage />
+      },
+      {
+        path: "contact",
+        element: <Contact />
+      },
+      {
+        path: "profile",
+        element:(
+        <ProtectedRoute>
+          <Profile />
+        </ProtectedRoute>
+        )
       }
     ]
   },
@@ -43,11 +63,10 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 const App = () => {
-
   return (
     <>
       <GlobalStyles />
-        <RouterProvider router={router} />
+      <RouterProvider router={router} />
     </>
   );
 };

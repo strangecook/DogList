@@ -15,35 +15,35 @@ export const NavBar = styled.div`
   .naviDivLeft {
     display: flex;
     align-items: center;
-    flex: 1; /* 왼쪽 여유 공간 확보 */
+    flex: 1; 
   }
 
   .naviDivCenter {
     display: flex;
     justify-content: center;
     align-items: center;
-    flex: 1; /* 중앙에 오게 하기 위해 flex 사용 */
+    flex: 1; 
   }
 
   .naviDivRight {
     display: flex;
     align-items: center;
-    flex: 1; /* 오른쪽 여유 공간 확보 */
-    justify-content: flex-end; /* 오른쪽 끝으로 정렬 */
+    flex: 1; 
+    justify-content: flex-end; 
     margin-right: 40px;
   }
 
   .navTitle {
     color: white;
-    font-size: 36px; /* 크기를 작게 설정 */
-    font-weight: bold; /* 글꼴 굵게 설정 */
+    font-size: 36px;
+    font-weight: bold;
     text-decoration: none;
-    transition: color 0.3s ease; /* 호버 시 색상 변경을 위한 전환 효과 */
+    transition: color 0.3s ease;
     margin-left: 10px;
   }
 
   .navTitle:hover {
-    color: #6CC18E; /* 호버 시 색상 변경 */
+    color: #6CC18E;
   }
 
   .navLink {
@@ -61,7 +61,7 @@ export const NavBar = styled.div`
   .navLink.active::after {
     content: '';
     position: absolute;
-    bottom: -5px; /* 위치 조정 */
+    bottom: -5px;
     left: 0;
     width: 100%;
     height: 2px;
@@ -97,22 +97,29 @@ export const NavBar = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 60px; /* 크기 작게 조정 */
+    width: 60px;
     height: 60px;
     border-radius: 50%;
     transition: background-color 0.3s ease;
   }
 
   .MainImage {
-    width: 40px; /* 크기 작게 조정 */
+    width: 40px;
     height: 40px;
     margin: 8px;
     filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);
-    transition: filter 0.2s ease; /* 호버 시 색상 변경을 위한 전환 효과 */
+    transition: filter 0.2s ease;
   }
 
   .mainHoverImageSpan .MainImage {
-    filter: invert(65%) sepia(50%) saturate(300%) hue-rotate(90deg) brightness(95%) contrast(95%); /* 호버 시 배경색과 어울리는 색상으로 변경 */
+    filter: invert(65%) sepia(50%) saturate(300%) hue-rotate(90deg) brightness(95%) contrast(95%);
+  }
+
+  .userMenuContainer {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
   }
 
   @media (max-width: 768px) {
@@ -141,4 +148,53 @@ export const NavBar = styled.div`
       height: 30px;
     }
   }
+`;
+
+export const UserMenu = styled.div`
+  position: absolute;
+  top: 50px; 
+  right: 0;
+  background-color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 0px 0px 20px 20px;
+  overflow: hidden;
+  z-index: 1000;
+  padding: 10px 0;
+  width: 100%; /* 드롭다운 메뉴의 너비를 프로필 버튼과 동일하게 설정 */
+`;
+
+export const UserMenuItem = styled.div`
+  padding: 10px;
+  white-space: nowrap;
+  cursor: pointer;
+  font-size: 16px;
+  &:hover {
+    background-color: #f0f0f0;
+  }
+`;
+
+export const UserProfileImage = styled.img`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+`;
+
+export const ProfileButton = styled.div`
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 20px 20px 0px 0px;
+  color: white;
+`;
+
+export const ProfileButtonHover = styled.div`
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 20px 20px 0px 0px;
+  background-color: white;
+  color: black;
 `;

@@ -5,9 +5,10 @@ import facebookLogo from "../Pictures/facebook_social media_social_icon.png"; //
 import { useForm } from "react-hook-form";
 import React, { useState } from "react";
 import { LoginCover, DogLoginImage, LoginBox, Form, Input, SignUpButton, ErrorMessage, GoogleLoginButton, FacebookLoginButton, ButtonWrapper } from "../login/loginCss"; // FacebookLoginButton 추가
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider } from "firebase/auth";
-import { auth } from "../firebase";
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider, updateProfile } from "firebase/auth";
+import { auth, db } from "../firebase";
 import { FirebaseError } from "firebase/app";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 
 export default function Login() {
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -36,12 +37,51 @@ export default function Login() {
     }
   };
 
-  const handleGoogleLogin = async () => {
+  const generateUniqueNickname = async (nickname) => {
+    let uniqueNickname = nickname;
+    let exists = true;
+    let attempt = 0;
+
+    while (exists && attempt < 5) {
+      const nicknameDoc = await getDoc(doc(db, "usernames", uniqueNickname));
+      if (nicknameDoc.exists()) {
+        uniqueNickname = `${nickname}${Math.floor(Math.random() * 10000)}`;
+      } else {
+        exists = false;
+        console.log(`Nickname "${uniqueNickname}" is available.`);
+      }
+      attempt++;
+    }
+
+    if (exists) {
+      console.error("Failed to generate a unique nickname.");
+      throw new Error("닉네임을 생성할 수 없습니다.");
+    }
+
+    return uniqueNickname;
+  };
+
+  const handleOAuthLogin = async (provider) => {
     try {
       setIsLoading(true);
       setErrorMessage(null);
-      const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      let nickname = user.displayName || `user_${user.uid.substring(0, 5)}`;
+      console.log(`Initial nickname: "${nickname}"`);
+      nickname = await generateUniqueNickname(nickname);
+
+      await updateProfile(user, { displayName: nickname });
+
+      await setDoc(doc(db, "users", user.uid), {
+        uid: user.uid,
+        nickname: nickname,
+        email: user.email
+      });
+
+      await setDoc(doc(db, "usernames", nickname), { uid: user.uid });
+
+      console.log("User login successful, navigating to home...");
       navigate("/");
     } catch (e) {
       if (e instanceof FirebaseError) {
@@ -54,23 +94,8 @@ export default function Login() {
     }
   };
 
-  const handleFacebookLogin = async () => {
-    try {
-      setIsLoading(true);
-      setErrorMessage(null);
-      const provider = new FacebookAuthProvider();
-      await signInWithPopup(auth, provider);
-      navigate("/");
-    } catch (e) {
-      if (e instanceof FirebaseError) {
-        const errorCode = e.code;
-        console.log(errorCode);
-        setErrorMessage(`Error: ${errorCode}`);
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const handleGoogleLogin = () => handleOAuthLogin(new GoogleAuthProvider());
+  const handleFacebookLogin = () => handleOAuthLogin(new FacebookAuthProvider());
 
   const getFirstErrorMessage = () => {
     if (errors.email) return errors.email.message;
