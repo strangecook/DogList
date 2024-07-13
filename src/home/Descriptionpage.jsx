@@ -1,10 +1,16 @@
 import React, { useState } from 'react';
 import dogLogoImage from '../Pictures/anna-dudkova-urs_y9NwFcc-unsplash.avif';
-import { DescriptionCover, Dogimage, Context, Notification } from './DescriptionpageCss';
+import { DescriptionCover, Dogimage, Context } from './DescriptionpageCss';
 import { db } from '../firebase';
 import { collection, addDoc } from 'firebase/firestore';
+import styled from 'styled-components';
 
-const Descriotionpage = () => {
+const Notification = styled.div`
+  margin-top: 10px;
+  color: ${props => (props.$isError ? 'red' : 'green')};
+`;
+
+const Descriptionpage = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [emailvalue, setEmailValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -42,7 +48,7 @@ const Descriotionpage = () => {
     setIsError(false);
     
     try {
-      await addDoc(collection(db, 'users'), {
+      await addDoc(collection(db, 'usersSubscribe'), {
         email: emailvalue,
         timestamp: new Date()
       });
@@ -78,7 +84,6 @@ const Descriotionpage = () => {
                   onChange={(e) => {
                     e.preventDefault();
                     setEmailValue(e.target.value);
-                    console.log(e.target.value);
                   }}
                 ></input>
               </div>
@@ -92,7 +97,7 @@ const Descriotionpage = () => {
                 {isLoading ? '구독 중...' : '새로운 정보 구독하기'}
               </button>
             </div>
-            {message && <Notification isError={isError}>{message}</Notification>}
+            {message && <Notification $isError={isError}>{message}</Notification>}
           </div>
         </Context>
       </DescriptionCover>
@@ -100,4 +105,4 @@ const Descriotionpage = () => {
   );
 };
 
-export default Descriotionpage;
+export default Descriptionpage;

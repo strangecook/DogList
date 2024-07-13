@@ -53,12 +53,14 @@ const router = createBrowserRouter([
 ]);
 
 const GlobalStyles = createGlobalStyle`
-  body {
+  html, body {
     font-family: 'Nanum Gothic', sans-serif;
     background-color: #f7f7f7;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    overflow-x: hidden; /* x축 스크롤을 숨기기 */
+    width: 100%;
   }
 `;
 

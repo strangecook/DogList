@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const NavBar = styled.div`
-  position: absolute;
+  position: absolute; /* 상단에 고정 */
   top: 0;
   left: 0;
   width: 100%;
@@ -11,24 +11,19 @@ export const NavBar = styled.div`
   align-items: center;
   padding: 10px 40px;
   background-color: #272527;
+  box-sizing: border-box; /* 패딩을 포함한 너비 계산 */
 
-  .naviDivLeft {
+  .naviDivLeft, .naviDivCenter, .naviDivRight {
+    flex: 1; 
     display: flex;
     align-items: center;
-    flex: 1; 
   }
 
   .naviDivCenter {
-    display: flex;
     justify-content: center;
-    align-items: center;
-    flex: 1; 
   }
 
   .naviDivRight {
-    display: flex;
-    align-items: center;
-    flex: 1; 
     justify-content: flex-end; 
     margin-right: 40px;
   }
@@ -152,19 +147,19 @@ export const NavBar = styled.div`
 
 export const UserMenu = styled.div`
   position: absolute;
-  top: 50px; 
+  top: 60px;
   right: 0;
   background-color: white;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border-radius: 0px 0px 20px 20px;
+  border-radius: 0px 0px 10px 10px;
   overflow: hidden;
   z-index: 1000;
   padding: 10px 0;
-  width: 100%; /* 드롭다운 메뉴의 너비를 프로필 버튼과 동일하게 설정 */
+  width: 200px;
 `;
 
 export const UserMenuItem = styled.div`
-  padding: 10px;
+  padding: 10px 20px;
   white-space: nowrap;
   cursor: pointer;
   font-size: 16px;
@@ -184,17 +179,31 @@ export const ProfileButton = styled.div`
   display: flex;
   align-items: center;
   cursor: pointer;
-  padding: 5px 10px;
-  border-radius: 20px 20px 0px 0px;
+  padding: 10px;
+  border-radius: 10px 10px 0px 0px;
   color: white;
+  background-color: #272527;
+  width: 180px;
+  justify-content: flex-start;
+  overflow: hidden;
 `;
 
 export const ProfileButtonHover = styled.div`
   display: flex;
   align-items: center;
   cursor: pointer;
-  padding: 5px 10px;
-  border-radius: 20px 20px 0px 0px;
+  padding: 10px;
+  border-radius: 10px 10px 0px 0px;
   background-color: white;
   color: black;
+  width: 180px;
+  justify-content: flex-start;
+  overflow: hidden;
+`;
+
+export const UserName = styled.span`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px; /* 닉네임의 최대 너비를 설정 */
 `;

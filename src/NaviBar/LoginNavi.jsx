@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { NavBar, UserMenu, UserMenuItem, UserProfileImage, ProfileButton, ProfileButtonHover } from './LoginNaviCss';
+import { NavBar, UserMenu, UserMenuItem, UserProfileImage, ProfileButton, ProfileButtonHover, UserName } from './LoginNaviCss';
 import pawImage from '../Pictures/dog-paw.png';
 import { auth } from '../firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
@@ -80,11 +80,11 @@ function LoginNavi() {
                             {menuOpen
                                 ? <ProfileButtonHover onClick={goToProfilePage}>
                                     <UserProfileImage src={currentUser.photoURL || pawImage} alt="Profile" />
-                                    {currentUser.displayName || 'User'}
+                                    <UserName>{currentUser.displayName || 'User'}</UserName>
                                 </ProfileButtonHover>
                                 : <ProfileButton onClick={goToProfilePage}>
                                     <UserProfileImage src={currentUser.photoURL || pawImage} alt="Profile" />
-                                    {currentUser.displayName || 'User'}
+                                    <UserName>{currentUser.displayName || 'User'}</UserName>
                                 </ProfileButton>
                             }
 
