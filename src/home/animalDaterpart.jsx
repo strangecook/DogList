@@ -1,6 +1,5 @@
-// src/components/AnimalDaterPart.js
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { Container, Card, Grid, SearchBar, SearchButton, SearchBarContainer, AutocompleteList, AutocompleteItem, ConsonantFilterContainer, ConsonantButton } from './animalDaterPartCss';
+import { Container, Card, Grid, SearchBar, SearchButton, SearchBarContainer, AutocompleteList, AutocompleteItem, ConsonantFilterContainer, ConsonantButton, ThemeFilterContainer, ThemeButton, FilterInfoContainer, FilterInfo, ResetButton } from './animalDaterPartCss';
 import DogCard from './dogCard';
 import { fetchAndStoreBreeds, getBreedsData } from '../dataPatch/fetchAndStoreBreeds';
 import CustomModal from '../component/Modal';
@@ -9,6 +8,13 @@ import useStore from '../store/useStore';
 import { ClipLoader } from 'react-spinners';
 
 const consonants = ["ㄱ", "ㄴ", "ㄷ", "ㄹ", "ㅁ", "ㅂ", "ㅅ", "ㅇ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
+const themes = [
+  { id: 1, name: '한국에서 인기있는 반려견' },
+  { id: 2, name: '1인가구에 좋은 반려견' },
+  { id: 3, name: '초보 견주에게 좋은 반려견' },
+  { id: 4, name: '자녀를 가지고 있는 가정에게 좋은 반려견' },
+  { id: 5, name: '노부부에게 좋은 반려견' }
+];
 
 const getKoreanConsonant = (char) => {
   const initialConsonants = [
@@ -29,6 +35,7 @@ const AnimalDaterPart = () => {
   const { storedFilters, setStoredFilters } = useStore();
   const [filters, setFilters] = useState(storedFilters);
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchInput, setSearchInput] = useState('');  // 검색 입력 상태
   const [autocompleteResults, setAutocompleteResults] = useState([]);
   const [loading, setLoading] = useState(true);
   const observer = useRef();
@@ -36,6 +43,7 @@ const AnimalDaterPart = () => {
   const [page, setPage] = useState(1);
   const autocompleteRef = useRef(null);
   const [selectedConsonant, setSelectedConsonant] = useState(null);
+  const [selectedTheme, setSelectedTheme] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,7 +62,7 @@ const AnimalDaterPart = () => {
     };
     fetchData();
   }, []);
-  
+
   useEffect(() => {
     return () => {
       document.body.style.overflow = 'auto';
@@ -82,7 +90,6 @@ const AnimalDaterPart = () => {
       filtered = filtered.filter(breed => breed.size === filters.size);
     }
     if (filters.coatType !== 'all') {
-      console.log("filters", filters)
       filtered = filtered.filter(breed => breed.coatType.includes(filters.coatType));
     }
     if (filters.affectionWithFamily !== 'all') {
@@ -101,10 +108,10 @@ const AnimalDaterPart = () => {
       filtered = filtered.filter(breed => breed.sheddingLevel === Number(filters.sheddingLevel));
     }
 
-    if (filters.searchQuery && filters.searchQuery !== '') {
-      filtered = filtered.filter(breed => 
-        breed.englishName.toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
-        breed.koreanName.toLowerCase().includes(filters.searchQuery.toLowerCase())
+    if (searchQuery && searchQuery !== '') {
+      filtered = filtered.filter(breed =>
+        breed.englishName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        breed.koreanName.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
@@ -115,13 +122,17 @@ const AnimalDaterPart = () => {
       });
     }
 
+    if (selectedTheme) {
+      filtered = filtered.filter(breed => breed.theme && breed.theme.includes(selectedTheme));
+    }
+
     localStorage.setItem('filteredBreeds', JSON.stringify(filtered));
     setDisplayedBreeds(filtered.slice(0, breedsPerPage * page));
-  }, [breedsData, filters, page, selectedConsonant]);
+  }, [breedsData, filters, page, selectedConsonant, selectedTheme, searchQuery]);
 
   useEffect(() => {
     filterBreeds();
-  }, [filters, breedsData, filterBreeds, page, selectedConsonant]);
+  }, [filters, breedsData, filterBreeds, page, selectedConsonant, selectedTheme, searchQuery]);
 
   const loadMoreBreeds = () => {
     setPage((prevPage) => prevPage + 1);
@@ -149,28 +160,32 @@ const AnimalDaterPart = () => {
     };
   }, []);
 
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      setFilters((prevFilters) => ({ ...prevFilters, searchQuery }));
-      setPage(1);
-      setAutocompleteResults([]);
-    }
-  };
-
   const handleSearchButtonClick = () => {
-    setFilters((prevFilters) => ({ ...prevFilters, searchQuery }));
+    console.log('Search button clicked'); // 콘솔 로그 추가
+    setSearchQuery(searchInput);
     setPage(1);
     setAutocompleteResults([]);
+    filterBreeds(); // 검색 실행
+  };
+
+  const handleAutocompleteItemClick = (breed) => {
+    setSearchQuery(breed.englishName);
+    setSearchInput(breed.englishName);
+    setAutocompleteResults([]);
+    console.log('Autocomplete item clicked:', breed); // 콘솔 로그 추가
+    filterBreeds(); // 검색 실행
   };
 
   const handleSearchInputChange = (e) => {
     const query = e.target.value;
-    setSearchQuery(query);
+    setSearchInput(query);
+    console.log('Search input changed:', query); // 콘솔 로그 추가
     if (query !== '') {
       const results = Object.values(breedsData).filter(breed =>
         breed.englishName.toLowerCase().includes(query.toLowerCase()) ||
         breed.koreanName.toLowerCase().includes(query.toLowerCase())
       );
+      console.log('Autocomplete results:', results); // 콘솔 로그 추가
       setAutocompleteResults(results.slice(0, 5));
     } else {
       setAutocompleteResults([]);
@@ -180,11 +195,58 @@ const AnimalDaterPart = () => {
   const handleConsonantClick = (consonant) => {
     setSelectedConsonant(consonant === selectedConsonant ? null : consonant);
     setPage(1);
+    filterBreeds();
+  };
+
+  const handleThemeClick = (theme) => {
+    setSelectedTheme(theme === selectedTheme ? null : theme);
+    setPage(1);
+    filterBreeds();
+  };
+
+  const resetFilters = () => {
+    setSelectedConsonant(null);
+    setSelectedTheme(null);
+    setFilters({
+      size: 'all',
+      coatType: 'all',
+      affectionWithFamily: 'all',
+      goodWithOtherDogs: 'all',
+      trainabilityLevel: 'all',
+      energyLevel: 'all',
+      sheddingLevel: 'all'
+    });
+    setSearchQuery('');
+    setSearchInput('');
+    setPage(1);
+    filterBreeds();
   };
 
   return (
     <Container>
-      <h1>Animal Dater Part</h1>
+      <FilterInfoContainer>
+        <FilterInfo>
+          현재 필터:{" "}
+          {selectedConsonant || selectedTheme || filters.size !== 'all' || filters.coatType !== 'all' || filters.affectionWithFamily !== 'all' || filters.goodWithOtherDogs !== 'all' || filters.trainabilityLevel !== 'all' || filters.energyLevel !== 'all' || filters.sheddingLevel !== 'all' || searchQuery
+            ? (
+              <>
+                {selectedConsonant && `자음: ${selectedConsonant}, `}
+                {selectedTheme && `테마: ${themes.find(theme => theme.id === selectedTheme)?.name}, `}
+                {filters.size !== 'all' && `크기: ${filters.size}, `}
+                {filters.coatType !== 'all' && `털 타입: ${filters.coatType}, `}
+                {filters.affectionWithFamily !== 'all' && `가족과의 애정: ${filters.affectionWithFamily}, `}
+                {filters.goodWithOtherDogs !== 'all' && `다른 개와의 친화력: ${filters.goodWithOtherDogs}, `}
+                {filters.trainabilityLevel !== 'all' && `훈련 가능성: ${filters.trainabilityLevel}, `}
+                {filters.energyLevel !== 'all' && `에너지 수준: ${filters.energyLevel}, `}
+                {filters.sheddingLevel !== 'all' && `털 빠짐 정도: ${filters.sheddingLevel}, `}
+                {searchQuery && `검색어: ${searchQuery}`}
+              </>
+            ) : "없음"
+          }
+        </FilterInfo>
+
+        <ResetButton onClick={resetFilters}>필터 초기화</ResetButton>
+      </FilterInfoContainer>
       <ConsonantFilterContainer>
         {consonants.map((consonant, index) => (
           <ConsonantButton
@@ -196,22 +258,29 @@ const AnimalDaterPart = () => {
           </ConsonantButton>
         ))}
       </ConsonantFilterContainer>
+      <ThemeFilterContainer>
+        {themes.map((theme) => (
+          <ThemeButton
+            key={theme.id}
+            selected={theme.id === selectedTheme}
+            onClick={() => handleThemeClick(theme.id)}
+          >
+            {theme.name}
+          </ThemeButton>
+        ))}
+      </ThemeFilterContainer>
       <SearchBarContainer ref={autocompleteRef}>
         <SearchBar
           type="text"
           placeholder="한국어나 영어로 종을 검색하세요"
-          value={searchQuery}
+          value={searchInput}  // 검색 입력 상태 사용
           onChange={handleSearchInputChange}
-          onKeyPress={handleKeyPress}
         />
         <SearchButton onClick={handleSearchButtonClick}>Search</SearchButton>
         {autocompleteResults.length > 0 && (
           <AutocompleteList>
             {autocompleteResults.map((breed, index) => (
-              <AutocompleteItem key={index} onClick={() => {
-                setSearchQuery(breed.englishName);
-                setAutocompleteResults([]);
-              }}>
+              <AutocompleteItem key={index} onClick={() => handleAutocompleteItemClick(breed)}>
                 {breed.koreanName} ({breed.englishName})
               </AutocompleteItem>
             ))}
@@ -230,19 +299,16 @@ const AnimalDaterPart = () => {
         ))}
         {loading && (
           <>
-          <Card style={{height: "300px"}}>
-            <ClipLoader color="#4caf50" size={50} />
-          </Card>
-          <Card style={{height: "300px"}}>
-            <ClipLoader color="#4caf50" size={50} />
-          </Card>
-          <Card style={{height: "300px"}}>
-            <ClipLoader color="#4caf50" size={50} />
-          </Card>
+            <Card style={{ height: "300px" }}>
+              <ClipLoader color="#4caf50" size={50} />
+            </Card>
+            <Card style={{ height: "300px" }}>
+              <ClipLoader color="#4caf50" size={50} />
+            </Card>
+            <Card style={{ height: "300px" }}>
+              <ClipLoader color="#4caf50" size={50} />
+            </Card>
           </>
-          // <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
-          //   <ClipLoader color="#4caf50" size={50} />
-          // </div>
         )}
       </Grid>
       {selectedBreed && (

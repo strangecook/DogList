@@ -7,11 +7,11 @@ export let DescriptionCover = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  /* padding: 20px; */
+  overflow-x: hidden; /* x축 스크롤을 숨기기 위해 추가 */
 `;
 
 export let Dogimage = styled.img`
-  width: 100%;
+  width: 100vw; /* 이미지가 화면 너비를 넘지 않도록 설정 */
   height: auto;
   object-fit: cover;
 `;

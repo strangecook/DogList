@@ -12,9 +12,12 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 const DetailContainer = styled.div`
   max-width: 800px;
-  margin: auto;
+  margin: 80px auto 20px auto; /* 위에 여백 추가 */
   padding: 20px;
   font-family: 'Nanum Gothic', sans-serif;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const Section = styled.div`
@@ -45,6 +48,13 @@ const SliderContainer = styled.div`
     display: block;
     margin: auto;
   }
+`;
+
+const SingleImageContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px; /* 이미지 높이에 맞춰 조정 */
 `;
 
 const LoaderDiv = styled.div`
@@ -124,12 +134,11 @@ const BreedDetail = () => {
   const selectedBreed = useStore(state => state.selectedBreed);
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [allImagesLoaded, setAllImagesLoaded] = useState(false);
 
   useEffect(() => {
-    // 컴포넌트가 마운트될 때 스크롤 위치를 제일 위로 설정
     window.scrollTo(0, 0);
 
-    // 사진 데이터 가져오기
     if (selectedBreed) {
       const fetchImages = async () => {
         setLoading(true);
@@ -140,6 +149,22 @@ const BreedDetail = () => {
       fetchImages();
     }
   }, [selectedBreed]);
+
+  useEffect(() => {
+    if (images.length > 0) {
+      let loadedCount = 0;
+      images.forEach((url) => {
+        const img = document.createElement('img'); // 수정된 부분
+        img.src = url;
+        img.onload = () => {
+          loadedCount++;
+          if (loadedCount === images.length) {
+            setAllImagesLoaded(true);
+          }
+        };
+      });
+    }
+  }, [images]);
 
   if (!selectedBreed) {
     return <DetailContainer>해당 강아지의 정보를 찾을 수 없습니다.</DetailContainer>;
@@ -215,7 +240,7 @@ const BreedDetail = () => {
   return (
     <DetailContainer>
       <h2>{selectedBreed.koreanName} ({selectedBreed.englishName})</h2>
-      {loading ? (
+      {loading || !allImagesLoaded ? (
         <LoaderDiv>
           <Loader />
         </LoaderDiv>
@@ -230,7 +255,11 @@ const BreedDetail = () => {
           </Slider>
         </SliderContainer>
       ) : (
-        images.length === 1 && <Image src={images[0]} alt={selectedBreed.englishName} />
+        images.length === 1 && (
+          <SingleImageContainer>
+            <Image src={images[0]} alt={selectedBreed.englishName} />
+          </SingleImageContainer>
+        )
       )}
 
       <Section>

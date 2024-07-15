@@ -3,40 +3,61 @@ import { useForm } from "react-hook-form";
 import React, { useState } from "react";
 import { Wrapper, BackgroundImage, FormBox, Form, Input, ErrorMessage } from "../createAccount/createAccountCss";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import { FirebaseError } from "firebase/app";
-import { AuthErrorCodes } from 'firebase/auth';
+import { doc, setDoc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
 
 export default function CreateAccount() {
   const navigate = useNavigate();
   const { register, handleSubmit, formState: { errors }, getValues } = useForm();
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null); // Add state for error message
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const onSubmit = async (data) => {
     setIsLoading(true);
-    setErrorMessage(null); // Reset error message on submit
+    setErrorMessage(null);
 
     if (isLoading || data.email === "" || data.password === "" || data.password.length < 5) return;
 
     try {
+      console.log("Checking if nickname exists...");
+      const q = query(collection(db, "users"), where("nickname", "==", data.name));
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        console.log("Nickname already exists");
+        setErrorMessage("닉네임이 이미 존재합니다.");
+        setIsLoading(false);
+        return;
+      }
+
+      console.log("Creating user...");
       const credential = await createUserWithEmailAndPassword(auth, data.email, data.password);
       await updateProfile(credential.user, {
         displayName: data.name
       });
+
+      console.log("Saving user data to Firestore...");
+      await setDoc(doc(db, "users", credential.user.uid), {
+        uid: credential.user.uid,
+        nickname: data.name,
+        email: data.email
+      });
+
+      console.log("User created successfully, navigating to home...");
       navigate("/");
     } catch (e) {
       if (e instanceof FirebaseError) {
         const errorCode = e.code;
-        setErrorMessage(`Error: ${errorCode}`); // Set error message state
+        console.error(`Firebase Error: ${errorCode}`);
+        setErrorMessage(`Error: ${errorCode}`);
       }
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Function to get the first error message
   const getFirstErrorMessage = () => {
     if (errors.name) return errors.name.message;
     if (errors.email) return errors.email.message;
@@ -90,7 +111,7 @@ export default function CreateAccount() {
             type="password"
           />
           {getFirstErrorMessage() && <ErrorMessage>{getFirstErrorMessage()}</ErrorMessage>}
-          {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>} {/* Render error message if exists */}
+          {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
           <Input
             type="submit"
             value={isLoading ? "계정 생성 중..." : "계정 생성하기"}

@@ -187,3 +187,60 @@ export const ConsonantButton = styled.button`
     background-color: #4caf50;
   }
 `;
+
+export const ThemeFilterContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+`;
+
+export const ThemeButton = styled.button`
+  padding: 10px 20px;
+  font-size: 1em;
+  color: white;
+  background-color: ${props => (props.selected ? '#4caf50' : '#9e9e9e')};
+  border: none;
+  border-radius: 8px;
+  margin: 0 5px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  
+  &:hover {
+    background-color: #4caf50;
+  }
+`;
+
+export const FilterInfoContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  background-color: #f9f9f9;
+  padding: 10px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+`;
+
+export const FilterInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 1em;
+  color: #333;
+  font-weight: bold;
+`;
+
+export const ResetButton = styled.button`
+  padding: 10px 20px;
+  font-size: 1em;
+  color: white;
+  background-color: #f44336;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  
+  &:hover {
+    background-color: #d32f2f;
+  }
+`;
