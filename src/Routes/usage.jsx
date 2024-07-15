@@ -120,6 +120,11 @@ const Usage = () => {
         <Paragraph>추가 지원이 필요하거나 문제를 보고하려면 개발자에게 문의하십시오.</Paragraph>
       </Section>
 
+      <Section>
+        <SectionTitle>추가사항</SectionTitle>
+        <Paragraph>저희 사이트는 1인 개발로 진행되고 있어 업데이트와 개선이 다소 늦어질 수 있습니다. 양해 부탁드립니다.</Paragraph>
+      </Section>
+
     </UsageContainer>
   );
 };

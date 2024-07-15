@@ -9,7 +9,6 @@ export default function Home(){
   margin: 0;
   width: 100vw;
   background-position: center;
-  overflow-x: hidden; /* x축 스크롤을 숨기기 위해 추가 */
 `;
 
     return (

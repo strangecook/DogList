@@ -45,6 +45,10 @@ function LoginNavi() {
         navigate('/profile');
     };
 
+    const goToMembershipPage = () => {
+        navigate('/membership');
+    };
+
     const handleLogout = async () => {
         try {
             await signOut(auth);
@@ -91,6 +95,7 @@ function LoginNavi() {
                             {menuOpen && (
                                 <UserMenu >
                                     <UserMenuItem onClick={goToProfilePage}>내 프로필</UserMenuItem>
+                                    <UserMenuItem onClick={goToMembershipPage}>멤버가입</UserMenuItem>
                                     <UserMenuItem onClick={handleLogout}>로그아웃</UserMenuItem>
                                 </UserMenu>
                             )}

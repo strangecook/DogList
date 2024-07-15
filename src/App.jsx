@@ -6,10 +6,11 @@ import CreateAccount from './Routes/createAccount';
 import Login from './Routes/login';
 import Usage from './Routes/usage';
 import Contact from './Routes/contact';
-import Profile from './Routes/Profile'
+import Profile from './Routes/Profile';
 import ProtectedRoute from './Routes/ProtectedRoute';
 import { createGlobalStyle } from 'styled-components';
 import BreedDetail from './component/BreedDetail';
+import Membership from './Routes/Membership'; // 새로 추가된 경로
 
 const router = createBrowserRouter([
   {
@@ -42,10 +43,18 @@ const router = createBrowserRouter([
       },
       {
         path: "profile",
-        element:(
-        <ProtectedRoute>
-          <Profile />
-        </ProtectedRoute>
+        element: (
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        )
+      },
+      {
+        path: "membership",  // 새로 추가된 멤버십 경로
+        element: (
+          <ProtectedRoute>
+            <Membership />
+          </ProtectedRoute>
         )
       }
     ]
@@ -59,7 +68,7 @@ const GlobalStyles = createGlobalStyle`
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    overflow-x: hidden; /* x축 스크롤을 숨기기 */
+    overflow-x: hidden;
     width: 100%;
   }
 `;
