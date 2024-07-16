@@ -1,6 +1,6 @@
 // src/AnimalDaterPart.js
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { Container, Card, Grid, SearchBar, SearchButton, SearchBarContainer, AutocompleteList, AutocompleteItem, ConsonantFilterContainer, ConsonantButton, ThemeFilterContainer, ThemeButton, FilterInfoContainer, FilterInfo, ResetButton } from './animalDaterPartCss';
+import { Container, Card, Grid, SearchBar, SearchButton, SearchBarContainer, AutocompleteList, AutocompleteItem, ConsonantFilterContainer, ConsonantButton, ThemeFilterContainer, ThemeButton, FilterInfoContainer, FilterInfo, ResetButton, ScrollToTopButton } from './animalDaterPartCss';
 import DogCard from './dogCard';
 import { fetchAndStoreBreeds, getBreedsData } from '../dataPatch/fetchAndStoreBreeds';
 import CustomModal from '../component/Modal';
@@ -39,6 +39,7 @@ const AnimalDaterPart = () => {
   const [searchInput, setSearchInput] = useState('');
   const [autocompleteResults, setAutocompleteResults] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showScrollButton, setShowScrollButton] = useState(false);
   const observer = useRef();
   const breedsPerPage = 10;
   const [page, setPage] = useState(1);
@@ -51,10 +52,8 @@ const AnimalDaterPart = () => {
       setLoading(true);
       const localBreedsData = getBreedsData();
       if (localBreedsData) {
-        console.log('Using localStorage data');
         setBreedsData(localBreedsData);
       } else {
-        console.log('Fetching new data...');
         await fetchAndStoreBreeds();
         const newBreedsData = getBreedsData();
         setBreedsData(newBreedsData);
@@ -67,6 +66,16 @@ const AnimalDaterPart = () => {
   useEffect(() => {
     return () => {
       document.body.style.overflow = 'auto';
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollButton(window.scrollY > 1000);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
@@ -87,62 +96,42 @@ const AnimalDaterPart = () => {
   
     let filtered = Object.values(breedsData);
   
-    console.log('Current Filters:', filters); // 현재 필터 값 확인
-  
     if (filters.size !== 'all') {
-      console.log('Filtering by size:', filters.size); // 사이즈 필터 로그
       filtered = filtered.filter(breed => breed.size === filters.size);
     }
     if (filters.breedGroup !== 'all') {
-      console.log('Filtering by breedGroup:', filters.breedGroup); // 견종 그룹 필터 로그
-      filtered = filtered.filter(breed => {
-        console.log('breedGroup:', breed.breedGroup); // breedGroup 값 확인
-        return breed.breedGroup && breed.breedGroup.includes(filters.breedGroup);
-      });
+      filtered = filtered.filter(breed => breed.breedGroup && breed.breedGroup.includes(filters.breedGroup));
     }
     if (filters.affectionWithFamily !== 'all') {
-      console.log('Filtering by affectionWithFamily:', filters.affectionWithFamily); // 가족과의 애정 필터 로그
       filtered = filtered.filter(breed => breed.affectionWithFamily === Number(filters.affectionWithFamily));
     }
     if (filters.goodWithOtherDogs !== 'all') {
-      console.log('Filtering by goodWithOtherDogs:', filters.goodWithOtherDogs); // 다른 개와의 친화력 필터 로그
       filtered = filtered.filter(breed => breed.goodWithOtherDogs === Number(filters.goodWithOtherDogs));
     }
     if (filters.trainabilityLevel !== 'all') {
-      console.log('Filtering by trainabilityLevel:', filters.trainabilityLevel); // 훈련 가능성 필터 로그
       filtered = filtered.filter(breed => breed.trainabilityLevel === Number(filters.trainabilityLevel));
     }
     if (filters.energyLevel !== 'all') {
-      console.log('Filtering by energyLevel:', filters.energyLevel); // 에너지 수준 필터 로그
       filtered = filtered.filter(breed => breed.energyLevel === Number(filters.energyLevel));
     }
     if (filters.sheddingLevel !== 'all') {
-      console.log('Filtering by sheddingLevel:', filters.sheddingLevel); // 털 빠짐 정도 필터 로그
       filtered = filtered.filter(breed => breed.sheddingLevel === Number(filters.sheddingLevel));
     }
-  
     if (searchQuery && searchQuery !== '') {
-      console.log('Filtering by searchQuery:', searchQuery); // 검색어 필터 로그
       filtered = filtered.filter(breed =>
         breed.englishName.toLowerCase().includes(searchQuery.toLowerCase()) ||
         breed.koreanName.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
-  
     if (selectedConsonant) {
-      console.log('Filtering by selectedConsonant:', selectedConsonant); // 자음 필터 로그
       filtered = filtered.filter(breed => {
         const firstChar = breed.koreanName.charAt(0);
         return getKoreanConsonant(firstChar) === selectedConsonant;
       });
     }
-  
     if (selectedTheme) {
-      console.log('Filtering by selectedTheme:', selectedTheme); // 테마 필터 로그
       filtered = filtered.filter(breed => breed.theme && breed.theme.includes(selectedTheme));
     }
-  
-    console.log('Filtered Breeds:', filtered); // 필터링된 결과 확인
   
     localStorage.setItem('filteredBreeds', JSON.stringify(filtered));
     setDisplayedBreeds(filtered.slice(0, breedsPerPage * page));
@@ -180,31 +169,27 @@ const AnimalDaterPart = () => {
   }, []);
 
   const handleSearchButtonClick = () => {
-    console.log('Search button clicked'); // 콘솔 로그 추가
     setSearchQuery(searchInput);
     setPage(1);
     setAutocompleteResults([]);
-    filterBreeds(); // 검색 실행
+    filterBreeds();
   };
 
   const handleAutocompleteItemClick = (breed) => {
     setSearchQuery(breed.englishName);
     setSearchInput(breed.englishName);
     setAutocompleteResults([]);
-    console.log('Autocomplete item clicked:', breed); // 콘솔 로그 추가
-    filterBreeds(); // 검색 실행
+    filterBreeds();
   };
 
   const handleSearchInputChange = (e) => {
     const query = e.target.value;
     setSearchInput(query);
-    console.log('Search input changed:', query); // 콘솔 로그 추가
     if (query !== '') {
       const results = Object.values(breedsData).filter(breed =>
         breed.englishName.toLowerCase().includes(query.toLowerCase()) ||
         breed.koreanName.toLowerCase().includes(query.toLowerCase())
       );
-      console.log('Autocomplete results:', results); // 콘솔 로그 추가
       setAutocompleteResults(results.slice(0, 5));
     } else {
       setAutocompleteResults([]);
@@ -245,6 +230,10 @@ const AnimalDaterPart = () => {
     setSearchInput('');
     setPage(1);
     filterBreeds();
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 900, behavior: 'smooth' });
   };
 
   return (
@@ -343,6 +332,9 @@ const AnimalDaterPart = () => {
           onRequestClose={handleCloseModal}
           breed={selectedBreed}
         />
+      )}
+      {showScrollButton && (
+        <ScrollToTopButton onClick={scrollToTop}>▲</ScrollToTopButton>
       )}
     </Container>
   );

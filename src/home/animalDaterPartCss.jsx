@@ -84,10 +84,6 @@ export const SearchButton = styled.button`
   border-radius: 0 8px 8px 0;
   cursor: pointer;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  
-  &:hover {
-    background-color: #45a049;  // Darker shade for hover effect
-  }
 `;
 
 export const AutocompleteList = styled.ul`
@@ -246,5 +242,23 @@ export const ResetButton = styled.button`
   
   &:hover {
     background-color: #d32f2f;
+  }
+`;
+
+export const ScrollToTopButton = styled.button`
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  padding: 10px 20px;
+  font-size: 1.2em;
+  color: white;
+  background-color: #4caf50;
+  border: none;
+  border-radius: 30%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+
+  &:hover {
+    background-color: #388e3c;
   }
 `;
