@@ -35,7 +35,7 @@ const AnimalDaterPart = () => {
   const { storedFilters, setStoredFilters } = useStore();
   const [filters, setFilters] = useState(storedFilters);
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchInput, setSearchInput] = useState('');  // 검색 입력 상태
+  const [searchInput, setSearchInput] = useState('');
   const [autocompleteResults, setAutocompleteResults] = useState([]);
   const [loading, setLoading] = useState(true);
   const observer = useRef();
@@ -83,56 +83,74 @@ const AnimalDaterPart = () => {
 
   const filterBreeds = useCallback(() => {
     if (!breedsData) return;
-
+  
     let filtered = Object.values(breedsData);
-
+  
+    console.log('Current Filters:', filters); // 현재 필터 값 확인
+  
     if (filters.size !== 'all') {
+      console.log('Filtering by size:', filters.size); // 사이즈 필터 로그
       filtered = filtered.filter(breed => breed.size === filters.size);
     }
-    if (filters.coatType !== 'all') {
-      filtered = filtered.filter(breed => breed.coatType.includes(filters.coatType));
+    if (filters.breedGroup !== 'all') {
+      console.log('Filtering by breedGroup:', filters.breedGroup); // 견종 그룹 필터 로그
+      filtered = filtered.filter(breed => {
+        console.log('breedGroup:', breed.breedGroup); // breedGroup 값 확인
+        return breed.breedGroup && breed.breedGroup.includes(filters.breedGroup);
+      });
     }
     if (filters.affectionWithFamily !== 'all') {
+      console.log('Filtering by affectionWithFamily:', filters.affectionWithFamily); // 가족과의 애정 필터 로그
       filtered = filtered.filter(breed => breed.affectionWithFamily === Number(filters.affectionWithFamily));
     }
     if (filters.goodWithOtherDogs !== 'all') {
+      console.log('Filtering by goodWithOtherDogs:', filters.goodWithOtherDogs); // 다른 개와의 친화력 필터 로그
       filtered = filtered.filter(breed => breed.goodWithOtherDogs === Number(filters.goodWithOtherDogs));
     }
     if (filters.trainabilityLevel !== 'all') {
+      console.log('Filtering by trainabilityLevel:', filters.trainabilityLevel); // 훈련 가능성 필터 로그
       filtered = filtered.filter(breed => breed.trainabilityLevel === Number(filters.trainabilityLevel));
     }
     if (filters.energyLevel !== 'all') {
+      console.log('Filtering by energyLevel:', filters.energyLevel); // 에너지 수준 필터 로그
       filtered = filtered.filter(breed => breed.energyLevel === Number(filters.energyLevel));
     }
     if (filters.sheddingLevel !== 'all') {
+      console.log('Filtering by sheddingLevel:', filters.sheddingLevel); // 털 빠짐 정도 필터 로그
       filtered = filtered.filter(breed => breed.sheddingLevel === Number(filters.sheddingLevel));
     }
-
+  
     if (searchQuery && searchQuery !== '') {
+      console.log('Filtering by searchQuery:', searchQuery); // 검색어 필터 로그
       filtered = filtered.filter(breed =>
         breed.englishName.toLowerCase().includes(searchQuery.toLowerCase()) ||
         breed.koreanName.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
-
+  
     if (selectedConsonant) {
+      console.log('Filtering by selectedConsonant:', selectedConsonant); // 자음 필터 로그
       filtered = filtered.filter(breed => {
         const firstChar = breed.koreanName.charAt(0);
         return getKoreanConsonant(firstChar) === selectedConsonant;
       });
     }
-
+  
     if (selectedTheme) {
+      console.log('Filtering by selectedTheme:', selectedTheme); // 테마 필터 로그
       filtered = filtered.filter(breed => breed.theme && breed.theme.includes(selectedTheme));
     }
-
+  
+    console.log('Filtered Breeds:', filtered); // 필터링된 결과 확인
+  
     localStorage.setItem('filteredBreeds', JSON.stringify(filtered));
     setDisplayedBreeds(filtered.slice(0, breedsPerPage * page));
   }, [breedsData, filters, page, selectedConsonant, selectedTheme, searchQuery]);
-
+  
   useEffect(() => {
     filterBreeds();
   }, [filters, breedsData, filterBreeds, page, selectedConsonant, selectedTheme, searchQuery]);
+  
 
   const loadMoreBreeds = () => {
     setPage((prevPage) => prevPage + 1);
@@ -209,7 +227,7 @@ const AnimalDaterPart = () => {
     setSelectedTheme(null);
     setFilters({
       size: 'all',
-      coatType: 'all',
+      breedGroup: 'all',
       affectionWithFamily: 'all',
       goodWithOtherDogs: 'all',
       trainabilityLevel: 'all',
@@ -227,13 +245,13 @@ const AnimalDaterPart = () => {
       <FilterInfoContainer>
         <FilterInfo>
           현재 필터:{" "}
-          {selectedConsonant || selectedTheme || filters.size !== 'all' || filters.coatType !== 'all' || filters.affectionWithFamily !== 'all' || filters.goodWithOtherDogs !== 'all' || filters.trainabilityLevel !== 'all' || filters.energyLevel !== 'all' || filters.sheddingLevel !== 'all' || searchQuery
+          {selectedConsonant || selectedTheme || filters.size !== 'all' || filters.breedGroup !== 'all' || filters.affectionWithFamily !== 'all' || filters.goodWithOtherDogs !== 'all' || filters.trainabilityLevel !== 'all' || filters.energyLevel !== 'all' || filters.sheddingLevel !== 'all' || searchQuery
             ? (
               <>
                 {selectedConsonant && `자음: ${selectedConsonant}, `}
                 {selectedTheme && `테마: ${themes.find(theme => theme.id === selectedTheme)?.name}, `}
                 {filters.size !== 'all' && `크기: ${filters.size}, `}
-                {filters.coatType !== 'all' && `털 타입: ${filters.coatType}, `}
+                {filters.breedGroup !== 'all' && `견종 그룹: ${filters.breedGroup}, `}
                 {filters.affectionWithFamily !== 'all' && `가족과의 애정: ${filters.affectionWithFamily}, `}
                 {filters.goodWithOtherDogs !== 'all' && `다른 개와의 친화력: ${filters.goodWithOtherDogs}, `}
                 {filters.trainabilityLevel !== 'all' && `훈련 가능성: ${filters.trainabilityLevel}, `}

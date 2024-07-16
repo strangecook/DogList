@@ -1,4 +1,3 @@
-// src/store/useStore.js
 import create from 'zustand';
 import { loadFromLocalStorage, saveToLocalStorage } from '../utils/localStorage';
 
@@ -10,6 +9,7 @@ const useStore = create((set) => ({
   },
   storedFilters: loadFromLocalStorage('storedFilters') || {
     size: 'all',
+    breedGroup: 'all', // breedGroup 필터 추가
     coatType: 'all',
     affectionWithFamily: 'all',
     goodWithOtherDogs: 'all',
