@@ -1,3 +1,4 @@
+// src/AnimalDaterPart.js
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { Container, Card, Grid, SearchBar, SearchButton, SearchBarContainer, AutocompleteList, AutocompleteItem, ConsonantFilterContainer, ConsonantButton, ThemeFilterContainer, ThemeButton, FilterInfoContainer, FilterInfo, ResetButton } from './animalDaterPartCss';
 import DogCard from './dogCard';
@@ -210,6 +211,12 @@ const AnimalDaterPart = () => {
     }
   };
 
+  const handleSearchInputKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleSearchButtonClick();
+    }
+  };
+
   const handleConsonantClick = (consonant) => {
     setSelectedConsonant(consonant === selectedConsonant ? null : consonant);
     setPage(1);
@@ -293,6 +300,7 @@ const AnimalDaterPart = () => {
           placeholder="한국어나 영어로 종을 검색하세요"
           value={searchInput}  // 검색 입력 상태 사용
           onChange={handleSearchInputChange}
+          onKeyDown={handleSearchInputKeyDown} // Enter 키 이벤트 핸들러 추가
         />
         <SearchButton onClick={handleSearchButtonClick}>Search</SearchButton>
         {autocompleteResults.length > 0 && (

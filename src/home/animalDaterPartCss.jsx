@@ -84,6 +84,10 @@ export const SearchButton = styled.button`
   border-radius: 0 8px 8px 0;
   cursor: pointer;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  
+  &:hover {
+    background-color: #45a049;  // Darker shade for hover effect
+  }
 `;
 
 export const AutocompleteList = styled.ul`
