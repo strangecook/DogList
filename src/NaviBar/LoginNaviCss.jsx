@@ -117,12 +117,14 @@ export const NavBar = styled.div`
     cursor: pointer;
   }
 
+  .menu-trigger {
+    display: inline-block;
+  }
+
   @media (max-width: 768px) {
     .naviDivCenter, .naviDivRight {
       display: none;
     }
-
-    padding: 10px 20px;
 
     .navTitle {
       font-size: 24px;
@@ -177,10 +179,11 @@ export const UserName = styled.span`
 
 export const MenuTrigger = styled.div`
   display: inline-block;
-  width: 50px;
-  height: 44px;
+  width: 44px;
+  height: 40px;
   position: relative;
   cursor: pointer;
+
   span {
     display: inline-block;
     width: 100%;
@@ -191,25 +194,62 @@ export const MenuTrigger = styled.div`
     left: 0;
     transition: all 0.4s;
   }
+
   span:nth-of-type(1) {
     top: 0;
   }
+
   span:nth-of-type(2) {
-    top: 20px;
+    top: 18px;
   }
+
   span:nth-of-type(3) {
     bottom: 0;
   }
+
   &.active-1 span:nth-of-type(1) {
     transform: translateY(20px) rotate(-45deg);
   }
+
   &.active-1 span:nth-of-type(2) {
     opacity: 0;
   }
+
   &.active-1 span:nth-of-type(3) {
     transform: translateY(-20px) rotate(45deg);
   }
+
+  @media (max-width: 768px) {
+    width: 30px;
+    height: 24px; /* Adjusted height to match the overall layout */
+
+    span {
+      height: 2px; /* Adjusted height for smaller screen */
+    }
+
+    span:nth-of-type(1) {
+      top: 0;
+    }
+
+    span:nth-of-type(2) {
+      top: 10px; /* Adjusted position for middle bar */
+    }
+
+    span:nth-of-type(3) {
+      top: 20px; /* Adjusted position for bottom bar */
+      bottom: auto; /* Reset bottom property to ensure proper positioning */
+    }
+
+    &.active-1 span:nth-of-type(1) {
+      transform: translateY(10px) rotate(-45deg); /* Adjusted transformation */
+    }
+
+    &.active-1 span:nth-of-type(3) {
+      transform: translateY(-10px) rotate(45deg); /* Adjusted transformation */
+    }
+  }
 `;
+
 
 export const MenuSpan = styled.span`
   display: inline-block;

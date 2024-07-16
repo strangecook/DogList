@@ -93,12 +93,12 @@ function LoginNavi() {
                         로그인페이지
                     </span>
                 )}
+            </div>
                 <MenuTrigger className={mobileMenuOpen ? 'active-1' : ''} onClick={toggleMobileMenu}>
                     <MenuSpan />
                     <MenuSpan />
                     <MenuSpan />
                 </MenuTrigger>
-            </div>
             {mobileMenuOpen && <Overlay onClick={toggleMobileMenu} />}
             <MobileMenu className={mobileMenuOpen ? 'open' : ''}>
                 <MobileMenuItem onClick={() => navigate('/')}>홈</MobileMenuItem>
