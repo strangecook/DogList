@@ -244,3 +244,21 @@ export const ResetButton = styled.button`
     background-color: #d32f2f;
   }
 `;
+
+export const ScrollToTopButton = styled.button`
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  padding: 10px 20px;
+  font-size: 1.2em;
+  color: white;
+  background-color: #4caf50;
+  border: none;
+  border-radius: 30%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+
+  &:hover {
+    background-color: #388e3c;
+  }
+`;

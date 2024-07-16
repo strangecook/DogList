@@ -1,4 +1,3 @@
-// src/components/Filters.js
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import useStore from '../store/useStore'; // Zustand store import
@@ -32,9 +31,9 @@ const Label = styled.label`
 
 const filterOptions = [
   { name: 'size', label: '크기', options: ['모두', '소형견', '중형견', '대형견', '초대형견'] },
-  { name: 'coatType', label: '털 타입', options: ['모두', '뻣뻣한 털','매끈한 털','거친 털','꼬인 털','이중 털','곱슬 털','물결 털','비단 털','무모'] },
+  { name: 'breedGroup', label: '견종 그룹', options: ['모두', '논스포팅', '스포팅', '스피츠', '워킹', '테리어', '토이', '하운드', '허딩', ] },
   { name: 'affectionWithFamily', label: '가족과의 애정', options: ['모두', '1', '2', '3', '4', '5'] },
-  { name: 'goodWithOtherDogs', label: '다른 개와의 친화력', options: ['모두', '1', '2', '3', '4', '5'] },
+  { name: 'goodWithOtherDogs', label: '다른 개와 친화력', options: ['모두', '1', '2', '3', '4', '5'] },
   { name: 'trainabilityLevel', label: '훈련 가능성', options: ['모두', '1', '2', '3', '4', '5'] },
   { name: 'energyLevel', label: '에너지 수준', options: ['모두', '1', '2', '3', '4', '5'] },
   { name: 'sheddingLevel', label: '털 빠짐 정도', options: ['모두', '1', '2', '3', '4', '5'] },
