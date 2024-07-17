@@ -319,3 +319,14 @@ export const ScrollToTopButton = styled.button`
     background-color: #388e3c;
   }
 `;
+
+export const TwoLineText = styled(Text)`
+  font-size: 1em;
+  margin: 0;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 5px 10px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;

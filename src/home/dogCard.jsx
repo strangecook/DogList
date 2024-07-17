@@ -3,7 +3,7 @@ import React, { useState, useEffect, forwardRef } from 'react';
 import styled from 'styled-components';
 import { ClipLoader } from 'react-spinners';
 import useStore from '../store/useStore';
-import { Card, ImageContainer, Image, CardContentTopLeft, Title, Text, CardContentBottomRight } from './animalDaterPartCss';
+import { Card, ImageContainer, Image, CardContentTopLeft, Text, CardContentBottomRight, TwoLineText } from './animalDaterPartCss';
 import { ref, getDownloadURL, listAll } from 'firebase/storage';
 import { storage } from '../firebase';
 
@@ -167,7 +167,7 @@ const DogCard = forwardRef(({ breed, onClick }, ref) => {
   const averageGroomingLevel = (breed.groomingLevel + breed.sheddingLevel) / 2;
 
   return (
-    <Card 
+    <Card
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onClick={() => handleCardClick(breed)}
@@ -232,12 +232,6 @@ const DogCard = forwardRef(({ breed, onClick }, ref) => {
           </BarSection>
           <BarSection>
             <BarContainer>
-              <Emoji>😃</Emoji>
-              <Text>기질: {breed.temperament}</Text>
-            </BarContainer>
-          </BarSection>
-          <BarSection>
-            <BarContainer>
               <Emoji>📏</Emoji>
               <Text>크기: {breed.size}</Text>
             </BarContainer>
@@ -245,10 +239,13 @@ const DogCard = forwardRef(({ breed, onClick }, ref) => {
         </Overlay>
       </FixedImageContainer>
       <CardContentTopLeft className="hide-on-hover">
-        <Title>{breed.koreanName}</Title>
       </CardContentTopLeft>
       <CardContentBottomRight>
-        <Text style={{ fontSize: '1.2em', margin: 0, background: 'rgba(0, 0, 0, 0.5)', padding: '5px 10px', borderRadius: '8px' }}>{breed.englishName}</Text>
+        <TwoLineText>
+          {breed.koreanName}
+          <br />
+          ({breed.englishName})
+        </TwoLineText>
       </CardContentBottomRight>
     </Card>
   );
