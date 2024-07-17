@@ -1,16 +1,22 @@
-// src/animalDaterPartCss.js
 import styled from 'styled-components';
 
 export const Container = styled.div`
   padding: 80px;
   background-color: #f7f7f7;
   font-family: 'Nanum Gothic', sans-serif;
+  @media (max-width: 768px) {
+    padding: 20px;
+  }
 `;
 
 export const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 25px;
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
+  }
 `;
 
 export const Card = styled.div`
@@ -34,7 +40,12 @@ export const Card = styled.div`
 export const FilterSection = styled.div`
   display: flex;
   justify-content: center;
+  align-items: center;
   margin-bottom: 20px;
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 export const Dropdown = styled.select`
@@ -53,11 +64,15 @@ export const Dropdown = styled.select`
 `;
 
 export const SearchBarContainer = styled.div`
-  position: relative;
   display: flex;
   justify-content: center;
+  align-items: center;
   margin-bottom: 20px;
   width: 100%;
+  @media (max-width: 768px) {
+    justify-content: center;
+    flex-direction: row;
+  }
 `;
 
 export const SearchBar = styled.input`
@@ -73,8 +88,17 @@ export const SearchBar = styled.input`
     border-color: #4caf50;
     outline: none;
   }
-`;
 
+  @media (max-width: 768px) {
+    width: 70%;
+    border-radius: 8px 0 0 8px;
+    font-size: 0.8em;
+
+    &::placeholder {
+      font-size: 0.8em;
+    }
+  }
+`;
 export const SearchButton = styled.button`
   padding: 10px 20px;
   font-size: 1em;
@@ -84,6 +108,13 @@ export const SearchButton = styled.button`
   border-radius: 0 8px 8px 0;
   cursor: pointer;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 768px) {
+    border-radius: 0 8px 8px 0;
+    margin-left: 0;
+    width: 30%;
+    font-size: 0.8em;
+  }
 `;
 
 export const AutocompleteList = styled.ul`
@@ -170,6 +201,9 @@ export const ConsonantFilterContainer = styled.div`
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 export const ConsonantButton = styled.button`
@@ -192,6 +226,9 @@ export const ThemeFilterContainer = styled.div`
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 export const ThemeButton = styled.button`
@@ -219,6 +256,13 @@ export const FilterInfoContainer = styled.div`
   padding: 10px 20px;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 768px) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+  }
 `;
 
 export const FilterInfo = styled.div`
@@ -228,6 +272,12 @@ export const FilterInfo = styled.div`
   font-size: 1em;
   color: #333;
   font-weight: bold;
+  width: 100%;
+  @media (max-width: 768px) {
+    flex-direction: row;
+    width: 70%;
+    font-size: 0.8em;
+  }
 `;
 
 export const ResetButton = styled.button`
@@ -239,9 +289,16 @@ export const ResetButton = styled.button`
   border-radius: 8px;
   cursor: pointer;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 10%;
   
   &:hover {
     background-color: #d32f2f;
+  }
+
+  @media (max-width: 768px) {
+    width: 55%;
+    margin-left: 10px;
+    font-size: 0.8em;
   }
 `;
 
