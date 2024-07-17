@@ -195,6 +195,9 @@ export const Text = styled.p`
   -webkit-text-stroke-color: black;
   color: #f5f5f5;
   font-family: 'Nanum Gothic', sans-serif;
+  @media (max-width: 768px) {
+    font-size: 0.6em;
+  }
 `;
 
 export const ConsonantFilterContainer = styled.div`

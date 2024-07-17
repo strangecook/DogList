@@ -50,6 +50,16 @@ const Overlay = styled.div`
   border-radius: 8px;
   padding: 10px;
   box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    /* position: relative; */
+    background: rgba(0, 0, 0, 0.8);
+    opacity: ${props => (props.showContent ? 1 : 0)};
+    transition: opacity 0.3s ease-in-out;
+    padding: 5px;
+    overflow: hidden;
+    justify-content: flex-start;
+  }
 `;
 
 const BarContainer = styled.div`
@@ -65,6 +75,9 @@ const BarContainer = styled.div`
 
 const Emoji = styled.span`
   margin-right: 8px;
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 const BarWrapper = styled.div`
@@ -94,6 +107,10 @@ const Bar = styled.div`
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   transition: width 0.5s ease-in-out;
+
+  @media (max-width: 768px) {
+    height: 4px;
+  }
 `;
 
 const InfoIcon = styled.span`
@@ -105,6 +122,9 @@ const InfoIcon = styled.span`
   padding: 2px 5px;
   border-radius: 20px;
   z-index: 10;
+  @media (max-width: 768px) {
+display: none;
+    }
 
   &:hover::after {
     content: "${props => props.tooltip}";
@@ -127,6 +147,18 @@ const BarSection = styled.div`
   width: 100%;
   margin: 5px 0;
   padding: 0 5px;
+  box-sizing: border-box;
+
+  &.hide-on-mobile {
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 2px 5px;
+    margin: 2px 0;
+  }
 `;
 
 const FixedImageContainer = styled(ImageContainer)`
@@ -138,6 +170,7 @@ const FixedImageContainer = styled(ImageContainer)`
 
 const DogCard = forwardRef(({ breed, onClick }, ref) => {
   const [hovered, setHovered] = useState(false);
+  const [showContent, setShowContent] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
   const [loading, setLoading] = useState(true);
   const setSelectedBreed = useStore(state => state.setSelectedBreed);
@@ -156,8 +189,12 @@ const DogCard = forwardRef(({ breed, onClick }, ref) => {
   }, [breed.englishName]);
 
   const handleCardClick = (breed) => {
-    setSelectedBreed(breed);
-    onClick(breed);
+    if (window.innerWidth <= 768) {
+      setShowContent(!showContent);
+    } else {
+      setSelectedBreed(breed);
+      onClick(breed);
+    }
   };
 
   const averageChildFriendly = breed.affectionWithFamily;
@@ -179,7 +216,7 @@ const DogCard = forwardRef(({ breed, onClick }, ref) => {
         ) : (
           imageUrl && <Image src={imageUrl} alt={breed.englishName} />
         )}
-        <Overlay style={{ opacity: hovered ? 1 : 0 }}>
+        <Overlay style={{ opacity: hovered ? 1 : 0 }} showContent={showContent}>
           <BarSection>
             <BarContainer>
               <Emoji>👶</Emoji>
@@ -210,7 +247,7 @@ const DogCard = forwardRef(({ breed, onClick }, ref) => {
               <Bar width={`${averageTrainability * 20}%`} />
             </BarWrapper>
           </BarSection>
-          <BarSection>
+          <BarSection className="hide-on-mobile">
             <BarContainer>
               <Emoji>⚡</Emoji>
               <Text>에너지 수준</Text>
@@ -220,7 +257,7 @@ const DogCard = forwardRef(({ breed, onClick }, ref) => {
               <Bar width={`${averageEnergy * 20}%`} />
             </BarWrapper>
           </BarSection>
-          <BarSection>
+          <BarSection className="hide-on-mobile">
             <BarContainer>
               <Emoji>🪮</Emoji>
               <Text>털 관리 및 빠짐</Text>
@@ -230,7 +267,7 @@ const DogCard = forwardRef(({ breed, onClick }, ref) => {
               <Bar width={`${averageGroomingLevel * 20}%`} reverse="true" />
             </BarWrapper>
           </BarSection>
-          <BarSection>
+          <BarSection className="hide-on-mobile">
             <BarContainer>
               <Emoji>📏</Emoji>
               <Text>크기: {breed.size}</Text>
