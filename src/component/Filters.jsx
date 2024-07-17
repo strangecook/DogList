@@ -7,6 +7,9 @@ const FilterSection = styled.div`
   flex-wrap: wrap;
   justify-content: space-around;
   margin-bottom: 20px;
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 const Dropdown = styled.select`

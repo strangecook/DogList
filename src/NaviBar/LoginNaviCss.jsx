@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const NavBar = styled.div`
-  position: absolute; /* 상단에 고정 */
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
@@ -11,10 +11,10 @@ export const NavBar = styled.div`
   align-items: center;
   padding: 10px 40px;
   background-color: #272527;
-  box-sizing: border-box; /* 패딩을 포함한 너비 계산 */
+  box-sizing: border-box;
 
   .naviDivLeft, .naviDivCenter, .naviDivRight {
-    flex: 1; 
+    flex: 1;
     display: flex;
     align-items: center;
   }
@@ -24,7 +24,7 @@ export const NavBar = styled.div`
   }
 
   .naviDivRight {
-    justify-content: flex-end; 
+    justify-content: flex-end;
     margin-right: 40px;
   }
 
@@ -117,8 +117,14 @@ export const NavBar = styled.div`
     cursor: pointer;
   }
 
+  .menu-trigger {
+    display: inline-block;
+  }
+
   @media (max-width: 768px) {
-    padding: 10px 20px;
+    .naviDivCenter, .naviDivRight {
+      display: none;
+    }
 
     .navTitle {
       font-size: 24px;
@@ -145,47 +151,11 @@ export const NavBar = styled.div`
   }
 `;
 
-export const UserMenu = styled.div`
-  position: absolute;
-  top: 60px;
-  right: 0;
-  background-color: white;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border-radius: 0px 0px 10px 10px;
-  overflow: hidden;
-  z-index: 1000;
-  padding: 10px 0;
-  width: 200px;
-`;
-
-export const UserMenuItem = styled.div`
-  padding: 10px 20px;
-  white-space: nowrap;
-  cursor: pointer;
-  font-size: 16px;
-  &:hover {
-    background-color: #f0f0f0;
-  }
-`;
-
 export const UserProfileImage = styled.img`
   width: 40px;
   height: 40px;
   border-radius: 50%;
   margin-right: 10px;
-`;
-
-export const ProfileButton = styled.div`
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  padding: 10px;
-  border-radius: 10px 10px 0px 0px;
-  color: white;
-  background-color: #272527;
-  width: 180px;
-  justify-content: flex-start;
-  overflow: hidden;
 `;
 
 export const ProfileButtonHover = styled.div`
@@ -194,8 +164,7 @@ export const ProfileButtonHover = styled.div`
   cursor: pointer;
   padding: 10px;
   border-radius: 10px 10px 0px 0px;
-  background-color: white;
-  color: black;
+  color: white;
   width: 180px;
   justify-content: flex-start;
   overflow: hidden;
@@ -205,5 +174,130 @@ export const UserName = styled.span`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 100px; /* 닉네임의 최대 너비를 설정 */
+  max-width: 100px;
+`;
+
+export const MenuTrigger = styled.div`
+  display: inline-block;
+  width: 44px;
+  height: 40px;
+  position: relative;
+  cursor: pointer;
+
+  span {
+    display: inline-block;
+    width: 100%;
+    height: 4px;
+    background-color: #fff;
+    border-radius: 4px;
+    position: absolute;
+    left: 0;
+    transition: all 0.4s;
+  }
+
+  span:nth-of-type(1) {
+    top: 0;
+  }
+
+  span:nth-of-type(2) {
+    top: 18px;
+  }
+
+  span:nth-of-type(3) {
+    bottom: 0;
+  }
+
+  &.active-1 span:nth-of-type(1) {
+    transform: translateY(20px) rotate(-45deg);
+  }
+
+  &.active-1 span:nth-of-type(2) {
+    opacity: 0;
+  }
+
+  &.active-1 span:nth-of-type(3) {
+    transform: translateY(-20px) rotate(45deg);
+  }
+
+  @media (max-width: 768px) {
+    width: 30px;
+    height: 24px; /* Adjusted height to match the overall layout */
+
+    span {
+      height: 2px; /* Adjusted height for smaller screen */
+    }
+
+    span:nth-of-type(1) {
+      top: 0;
+    }
+
+    span:nth-of-type(2) {
+      top: 10px; /* Adjusted position for middle bar */
+    }
+
+    span:nth-of-type(3) {
+      top: 20px; /* Adjusted position for bottom bar */
+      bottom: auto; /* Reset bottom property to ensure proper positioning */
+    }
+
+    &.active-1 span:nth-of-type(1) {
+      transform: translateY(10px) rotate(-45deg); /* Adjusted transformation */
+    }
+
+    &.active-1 span:nth-of-type(3) {
+      transform: translateY(-10px) rotate(45deg); /* Adjusted transformation */
+    }
+  }
+`;
+
+
+export const MenuSpan = styled.span`
+  display: inline-block;
+  width: 100%;
+  height: 4px;
+  background-color: #fff;
+  border-radius: 4px;
+  position: absolute;
+  left: 0;
+  transition: all 0.4s;
+`;
+
+export const MobileMenu = styled.div`
+  position: fixed;
+  top: 0;
+  right: -250px;
+  width: 250px;
+  height: 100%;
+  background-color: #272527;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+  transition: right 0.3s ease;
+  z-index: 1001;
+  padding-top: 60px;
+  display: flex;
+  flex-direction: column;
+
+  &.open {
+    right: 0;
+  }
+`;
+
+export const MobileMenuItem = styled.div`
+  padding: 10px 20px;
+  color: white;
+  white-space: nowrap;
+  cursor: pointer;
+  font-size: 16px;
+  &:hover {
+    background-color: #4caf50;
+  }
+`;
+
+export const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
 `;

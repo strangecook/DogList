@@ -2,27 +2,29 @@ import styled from 'styled-components';
 
 export let DescriptionCover = styled.div`
   width: 100vw;
+  height: 100vh; /* 전체 화면 높이 사용 */
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
-  overflow-x: hidden; /* x축 스크롤을 숨기기 위해 추가 */
+  overflow: hidden; /* 자식 요소가 부모 요소를 넘지 않도록 설정 */
 `;
 
 export let Dogimage = styled.img`
-  width: 100vw; /* 이미지가 화면 너비를 넘지 않도록 설정 */
-  height: auto;
-  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 이미지가 전체를 덮도록 설정 */
 `;
 
 export let Context = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 10%;
-  transform: translateY(-50%);
-  text-align: left;
+  position: relative;
+  text-align: center; /* 중앙 정렬 */
   color: #fff;
+  z-index: 1; /* 이미지 위에 표시되도록 설정 */
+  right: 220px;
 
   .contextH1 {
     white-space: pre-wrap;
@@ -30,13 +32,14 @@ export let Context = styled.div`
     line-height: 1.2em;
     -webkit-text-stroke-width: 1.5px;
     -webkit-text-stroke-color: black;
+    margin-bottom: 20px; /* 아래 여백 추가 */
   }
 
   .contextH3 {
     white-space: pre-wrap;
     font-size: 1.5vw;
     margin-top: 0;
-    margin-bottom: 14px;
+    margin-bottom: 20px;
     -webkit-text-stroke-width: 0.3px;
     -webkit-text-stroke-color: black;
   }
@@ -50,6 +53,8 @@ export let Context = styled.div`
     gap: 10px;
     align-items: center;
     border: 1px solid #ccc;
+    max-width: 400px;
+    margin: 0 auto; /* 중앙 정렬 */
   }
 
   .emaildiv {
@@ -93,7 +98,12 @@ export let Context = styled.div`
   }
 
   @media (max-width: 768px) {
-    left: 5%;
+    margin-top: 70vh;
+    right: 0;
+
+    .emailcontainer {
+      display: none;
+    }
     .contextH1 {
       font-size: 6vw;
     }
@@ -122,6 +132,7 @@ export let Notification = styled.p`
   width: 50%;
   max-width: 350px;
   padding: 7px;
+  z-index: 1; /* 이미지 위에 표시되도록 설정 */
 
   @media (max-width: 768px) {
     width: 100%;

@@ -71,13 +71,13 @@ const DetailButton = styled(Link)`
   display: inline-block;
   padding: 10px 20px;
   margin-top: 20px;
-  background-color: #007BFF;
+  background-color: #4caf50;
   color: #fff;
   text-decoration: none;
   border-radius: 5px;
   text-align: center;
   &:hover {
-    background-color: #0056b3;
+    background-color: #388e3c;
   }
 `;
 

@@ -1,14 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import dogLogoImage from '../Pictures/anna-dudkova-urs_y9NwFcc-unsplash.avif';
-import { DescriptionCover, Dogimage, Context } from './DescriptionpageCss';
+import dogMediaImage from '../Pictures/tadeusz-lakota-LUNqk8qth2A-unsplash.webp'
+import { DescriptionCover, Dogimage, Context, Notification } from './DescriptionpageCss';
 import { db } from '../firebase';
 import { collection, addDoc } from 'firebase/firestore';
-import styled from 'styled-components';
-
-const Notification = styled.div`
-  margin-top: 10px;
-  color: ${props => (props.$isError ? 'red' : 'green')};
-`;
 
 const Descriptionpage = () => {
   const [isHovered, setIsHovered] = useState(false);
@@ -16,6 +11,22 @@ const Descriptionpage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
+  const [imageSrc, setImageSrc] = useState(dogLogoImage);
+
+  useEffect(() => {
+    const updateImageSrc = () => {
+      if (window.innerWidth <= 768) {
+        setImageSrc(dogMediaImage);
+      } else {
+        setImageSrc(dogLogoImage);
+      }
+    };
+
+    updateImageSrc(); // Initial check
+
+    window.addEventListener('resize', updateImageSrc);
+    return () => window.removeEventListener('resize', updateImageSrc);
+  }, []);
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -67,7 +78,7 @@ const Descriptionpage = () => {
   return (
     <div>
       <DescriptionCover>
-        <Dogimage src={dogLogoImage} alt="dogLogoImage"></Dogimage>
+        <Dogimage src={imageSrc} alt="dogImage"></Dogimage>
         <Context>
           <div className="text">
             <h1 className="contextH1">{`당신의 완벽한 강아지를 찾는 여정,\n지금 시작하세요`}</h1>
@@ -97,7 +108,7 @@ const Descriptionpage = () => {
                 {isLoading ? '구독 중...' : '새로운 정보 구독하기'}
               </button>
             </div>
-            {message && <Notification $isError={isError}>{message}</Notification>}
+            {message && <Notification isError={isError}>{message}</Notification>}
           </div>
         </Context>
       </DescriptionCover>
