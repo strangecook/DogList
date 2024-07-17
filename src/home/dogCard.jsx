@@ -6,6 +6,7 @@ import useStore from '../store/useStore';
 import { Card, ImageContainer, Image, CardContentTopLeft, Text, CardContentBottomRight, SingleLineText } from './animalDaterPartCss';
 import { ref, getDownloadURL, listAll } from 'firebase/storage';
 import { storage } from '../firebase';
+import { Link } from 'react-router-dom';
 
 const fetchImagesFromStorage = async (breedName) => {
   try {
@@ -52,7 +53,6 @@ const Overlay = styled.div`
   box-sizing: border-box;
 
   @media (max-width: 768px) {
-    /* position: relative; */
     background: rgba(0, 0, 0, 0.8);
     opacity: ${props => (props.showContent ? 1 : 0)};
     transition: opacity 0.3s ease-in-out;
@@ -71,6 +71,11 @@ const BarContainer = styled.div`
   align-items: center;
   font-size: 0.9em;
   position: relative;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    display: flex;
+  }
 `;
 
 const Emoji = styled.span`
@@ -87,6 +92,9 @@ const BarWrapper = styled.div`
   overflow: hidden;
   margin-top: 3px;
   position: relative;
+  @media (max-width: 768px) {
+    height: 4px;
+  }
 `;
 
 const Bar = styled.div`
@@ -123,8 +131,8 @@ const InfoIcon = styled.span`
   border-radius: 20px;
   z-index: 10;
   @media (max-width: 768px) {
-display: none;
-    }
+    display: none;
+  }
 
   &:hover::after {
     content: "${props => props.tooltip}";
@@ -158,6 +166,8 @@ const BarSection = styled.div`
   @media (max-width: 768px) {
     padding: 2px 5px;
     margin: 2px 0;
+    display: flex;
+    height: 12px;
   }
 `;
 
@@ -166,6 +176,17 @@ const FixedImageContainer = styled(ImageContainer)`
   width: 100%;
   overflow: hidden;
   border-radius: 8px;
+`;
+
+const DetailButton = styled(Link)`
+  display: inline-block;
+  width: 100%;
+  margin: 3px auto;
+  background-color: #4caf50;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+  text-align: center;
 `;
 
 const DogCard = forwardRef(({ breed, onClick }, ref) => {
@@ -197,6 +218,14 @@ const DogCard = forwardRef(({ breed, onClick }, ref) => {
     }
   };
 
+  useEffect(() => {
+    console.log(showContent)
+  }, [showContent])
+
+  const handleDetailButtonClick = () => {
+    setSelectedBreed(breed);
+  };
+
   const averageChildFriendly = breed.affectionWithFamily;
   const averageDogFriendly = breed.goodWithOtherDogs;
   const averageTrainability = breed.trainabilityLevel;
@@ -216,7 +245,7 @@ const DogCard = forwardRef(({ breed, onClick }, ref) => {
         ) : (
           imageUrl && <Image src={imageUrl} alt={breed.englishName} />
         )}
-        <Overlay style={{ opacity: hovered ? 1 : 0 }} showContent={showContent}>
+        <Overlay className={showContent ? "" : "mobile-flex"} style={{ opacity: hovered ? 1 : 0 }} showContent={showContent}>
           <BarSection>
             <BarContainer>
               <Emoji>👶</Emoji>
@@ -247,7 +276,7 @@ const DogCard = forwardRef(({ breed, onClick }, ref) => {
               <Bar width={`${averageTrainability * 20}%`} />
             </BarWrapper>
           </BarSection>
-          <BarSection className="hide-on-mobile">
+          <BarSection>
             <BarContainer>
               <Emoji>⚡</Emoji>
               <Text>에너지 수준</Text>
@@ -257,7 +286,7 @@ const DogCard = forwardRef(({ breed, onClick }, ref) => {
               <Bar width={`${averageEnergy * 20}%`} />
             </BarWrapper>
           </BarSection>
-          <BarSection className="hide-on-mobile">
+          <BarSection>
             <BarContainer>
               <Emoji>🪮</Emoji>
               <Text>털 관리 및 빠짐</Text>
@@ -267,22 +296,36 @@ const DogCard = forwardRef(({ breed, onClick }, ref) => {
               <Bar width={`${averageGroomingLevel * 20}%`} reverse="true" />
             </BarWrapper>
           </BarSection>
-          <BarSection className="hide-on-mobile">
+          <BarSection>
             <BarContainer>
               <Emoji>📏</Emoji>
               <Text>크기: {breed.size}</Text>
             </BarContainer>
           </BarSection>
+          {
+            showContent &&
+            <BarSection>
+              <BarContainer>
+                <DetailButton to={`/breeds/${breed.englishName.toLowerCase()}`} onClick={handleDetailButtonClick}>
+                  자세한 정보
+                </DetailButton>
+              </BarContainer>
+            </BarSection>
+          }
         </Overlay>
       </FixedImageContainer>
       <CardContentTopLeft className="hide-on-hover">
       </CardContentTopLeft>
-      <CardContentBottomRight>
-        <SingleLineText>
-          {breed.koreanName}
-          <span>({breed.englishName})</span>
-        </SingleLineText>
-      </CardContentBottomRight>
+      {
+        showContent ||
+        <CardContentBottomRight>
+          <SingleLineText>
+            {breed.koreanName}
+            <span>({breed.englishName})</span>
+          </SingleLineText>
+        </CardContentBottomRight>
+      }
+
     </Card>
   );
 });
