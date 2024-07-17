@@ -320,7 +320,7 @@ export const ScrollToTopButton = styled.button`
   }
 `;
 
-export const TwoLineText = styled(Text)`
+export const SingleLineText = styled(Text)`
   font-size: 1em;
   margin: 0;
   background: rgba(0, 0, 0, 0.5);
@@ -329,4 +329,11 @@ export const TwoLineText = styled(Text)`
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  @media (max-width: 768px) {
+    font-size: 0.6em;
+    span {
+      display: none;
+    }
+  }
 `;

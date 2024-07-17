@@ -3,7 +3,7 @@ import React, { useState, useEffect, forwardRef } from 'react';
 import styled from 'styled-components';
 import { ClipLoader } from 'react-spinners';
 import useStore from '../store/useStore';
-import { Card, ImageContainer, Image, CardContentTopLeft, Text, CardContentBottomRight, TwoLineText } from './animalDaterPartCss';
+import { Card, ImageContainer, Image, CardContentTopLeft, Text, CardContentBottomRight, SingleLineText } from './animalDaterPartCss';
 import { ref, getDownloadURL, listAll } from 'firebase/storage';
 import { storage } from '../firebase';
 
@@ -241,11 +241,10 @@ const DogCard = forwardRef(({ breed, onClick }, ref) => {
       <CardContentTopLeft className="hide-on-hover">
       </CardContentTopLeft>
       <CardContentBottomRight>
-        <TwoLineText>
+        <SingleLineText>
           {breed.koreanName}
-          <br />
-          ({breed.englishName})
-        </TwoLineText>
+          <span>({breed.englishName})</span>
+        </SingleLineText>
       </CardContentBottomRight>
     </Card>
   );

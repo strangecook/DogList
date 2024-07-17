@@ -233,7 +233,7 @@ const AnimalDaterPart = () => {
   };
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 900, behavior: 'smooth' });
+    window.scrollTo({ top: 850, behavior: 'smooth' });
   };
 
   return (
