@@ -1,18 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Slider from 'react-slick';
-import { Bar } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { ref, getDownloadURL, listAll } from 'firebase/storage';
 import { storage } from '../firebase';
 import useStore from '../store/useStore';
 
-// Chart.js 구성 요소 등록
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
-
 const DetailContainer = styled.div`
   max-width: 800px;
-  margin: 80px auto 20px auto; /* 위에 여백 추가 */
+  margin: 80px auto 20px auto;
   padding: 20px;
   font-family: 'Nanum Gothic', sans-serif;
   background-color: #ffffff;
@@ -39,10 +34,6 @@ const Image = styled.img`
   margin-bottom: 20px;
 `;
 
-const GraphContainer = styled.div`
-  margin-bottom: 30px;
-`;
-
 const SliderContainer = styled.div`
   .slick-slide img {
     display: block;
@@ -54,7 +45,7 @@ const SingleImageContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 400px; /* 이미지 높이에 맞춰 조정 */
+  height: 400px;
 `;
 
 const LoaderDiv = styled.div`
@@ -80,6 +71,57 @@ const Loader = styled.div`
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
+`;
+
+const BarContainer = styled.div`
+  display: grid;
+  grid-template-columns: 40px 120px 1fr;
+  gap: 8px;
+  align-items: center;
+  margin: 8px 0;
+  font-family: 'Nanum Gothic', sans-serif;
+  font-size: 0.8em;
+`;
+
+const Emoji = styled.span`
+  text-align: center;
+`;
+
+const Label = styled.span`
+  text-align: left;
+`;
+
+const BarWrapper = styled.div`
+  width: 100%;
+  background-color: #333;
+  border-radius: 5px;
+  overflow: hidden;
+`;
+
+const Bar = styled.div`
+  width: ${props => props.width};
+  height: 12px;
+  background-color: ${props => {
+    const numericWidth = parseFloat(props.width);
+    if (props.reverse === "true") {
+      if (numericWidth <= 40) return '#4caf50';
+      if (numericWidth <= 75) return '#FFC924';
+      return '#FF4742';
+    } else {
+      if (numericWidth <= 20) return '#FF4742';
+      if (numericWidth <= 50) return '#FFC924';
+      return '#4caf50';
+    }
+  }};
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: width 0.5s ease-in-out;
+`;
+
+const BarSection = styled.div`
+  width: 100%;
+  margin: 10px 0;
+  padding: 0 5px;
 `;
 
 const fetchImagesFromStorage = async (breedName) => {
@@ -154,7 +196,7 @@ const BreedDetail = () => {
     if (images.length > 0) {
       let loadedCount = 0;
       images.forEach((url) => {
-        const img = document.createElement('img'); // 수정된 부분
+        const img = document.createElement('img');
         img.src = url;
         img.onload = () => {
           loadedCount++;
@@ -169,63 +211,6 @@ const BreedDetail = () => {
   if (!selectedBreed) {
     return <DetailContainer>해당 강아지의 정보를 찾을 수 없습니다.</DetailContainer>;
   }
-
-  // 숫자 데이터만 추출하여 그래프 데이터로 변환
-  const numericData = {
-    labels: [
-      '적응력', '가족과의 애정', '다른 개와의 친화력', '어린 아이와의 친화력', 
-      '타인에 대한 개방성', '보호 본능', '에너지 수준', '장난기', 
-      '정신적 자극 필요도', '훈련 가능성', '털 빠짐 정도', '그루밍 필요도', 
-      '짖는 수준', '침 흘림 수준'
-    ],
-    datasets: [
-      {
-        label: 'Level',
-        data: [
-          selectedBreed.adaptabilityLevel, selectedBreed.affectionWithFamily, 
-          selectedBreed.goodWithOtherDogs, selectedBreed.goodWithYoungChildren, 
-          selectedBreed.opennessToStrangers, selectedBreed.guardProtectiveInstinct, 
-          selectedBreed.energyLevel, selectedBreed.playfulnessLevel, 
-          selectedBreed.needsMentalStimulation, selectedBreed.trainabilityLevel, 
-          selectedBreed.sheddingLevel, selectedBreed.groomingLevel, 
-          selectedBreed.barkingLevel, selectedBreed.droolingLevel
-        ],
-        backgroundColor: [
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(255, 99, 132, 0.2)'
-        ],
-        borderColor: [
-          'rgba(75, 192, 192, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(255, 99, 132, 1)',
-          'rgba(255, 99, 132, 1)',
-          'rgba(255, 99, 132, 1)',
-          'rgba(255, 99, 132, 1)'
-        ],
-        borderWidth: 1
-      }
-    ]
-  };
 
   const sliderSettings = {
     dots: true,
@@ -277,9 +262,106 @@ const BreedDetail = () => {
 
       <Section>
         <SectionTitle>성격 및 훈련</SectionTitle>
-        <GraphContainer>
-          <Bar data={numericData} />
-        </GraphContainer>
+        <BarSection>
+          <BarContainer>
+            <Emoji>🌟</Emoji>
+            <Label>적응력:</Label>
+            <BarWrapper>
+              <Bar width={`${selectedBreed.adaptabilityLevel * 20}%`} />
+            </BarWrapper>
+          </BarContainer>
+          <BarContainer>
+            <Emoji>❤️</Emoji>
+            <Label>가족과의 애정:</Label>
+            <BarWrapper>
+              <Bar width={`${selectedBreed.affectionWithFamily * 20}%`} />
+            </BarWrapper>
+          </BarContainer>
+          <BarContainer>
+            <Emoji>🐾</Emoji>
+            <Label>다른 개와의 친화력:</Label>
+            <BarWrapper>
+              <Bar width={`${selectedBreed.goodWithOtherDogs * 20}%`} />
+            </BarWrapper>
+          </BarContainer>
+          <BarContainer>
+            <Emoji>👶</Emoji>
+            <Label>어린 아이와의 친화력:</Label>
+            <BarWrapper>
+              <Bar width={`${selectedBreed.goodWithYoungChildren * 20}%`} />
+            </BarWrapper>
+          </BarContainer>
+          <BarContainer>
+            <Emoji>🐕</Emoji>
+            <Label>타인에 대한 개방성:</Label>
+            <BarWrapper>
+              <Bar width={`${selectedBreed.opennessToStrangers * 20}%`} />
+            </BarWrapper>
+          </BarContainer>
+          <BarContainer>
+            <Emoji>🛡️</Emoji>
+            <Label>보호 본능:</Label>
+            <BarWrapper>
+              <Bar width={`${selectedBreed.guardProtectiveInstinct * 20}%`} />
+            </BarWrapper>
+          </BarContainer>
+          <BarContainer>
+            <Emoji>⚡</Emoji>
+            <Label>에너지 수준:</Label>
+            <BarWrapper>
+              <Bar width={`${selectedBreed.energyLevel * 20}%`} />
+            </BarWrapper>
+          </BarContainer>
+          <BarContainer>
+            <Emoji>🎮</Emoji>
+            <Label>장난기:</Label>
+            <BarWrapper>
+              <Bar width={`${selectedBreed.playfulnessLevel * 20}%`} />
+            </BarWrapper>
+          </BarContainer>
+          <BarContainer>
+            <Emoji>🧠</Emoji>
+            <Label>정신적 자극 필요도:</Label>
+            <BarWrapper>
+              <Bar width={`${selectedBreed.needsMentalStimulation * 20}%`} />
+            </BarWrapper>
+          </BarContainer>
+          <BarContainer>
+            <Emoji>🎓</Emoji>
+            <Label>훈련 가능성:</Label>
+            <BarWrapper>
+              <Bar width={`${selectedBreed.trainabilityLevel * 20}%`} />
+            </BarWrapper>
+          </BarContainer>
+          <BarContainer>
+            <Emoji>🪮</Emoji>
+            <Label>털 빠짐 정도:</Label>
+            <BarWrapper>
+              <Bar width={`${selectedBreed.sheddingLevel * 20}%`} reverse="true" />
+            </BarWrapper>
+          </BarContainer>
+          <BarContainer>
+            <Emoji>🧼</Emoji>
+            <Label>그루밍 필요도:</Label>
+            <BarWrapper>
+              <Bar width={`${selectedBreed.groomingLevel * 20}%`} reverse="true" />
+            </BarWrapper>
+          </BarContainer>
+          <BarContainer>
+            <Emoji>🗣️</Emoji>
+            <Label>짖는 수준:</Label>
+            <BarWrapper>
+              <Bar width={`${selectedBreed.barkingLevel * 20}%`} reverse="true" />
+            </BarWrapper>
+          </BarContainer>
+          <BarContainer>
+            <Emoji>💧</Emoji>
+            <Label>침 흘림 수준:</Label>
+            <BarWrapper>
+              <Bar width={`${selectedBreed.droolingLevel * 20}%`} reverse="true" />
+            </BarWrapper>
+          </BarContainer>
+        </BarSection>
       </Section>
 
       <Section>
