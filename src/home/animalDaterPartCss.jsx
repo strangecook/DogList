@@ -64,6 +64,7 @@ export const Dropdown = styled.select`
 `;
 
 export const SearchBarContainer = styled.div`
+  position: relative; // 추가된 부분
   display: flex;
   justify-content: center;
   align-items: center;
@@ -99,6 +100,7 @@ export const SearchBar = styled.input`
     }
   }
 `;
+
 export const SearchButton = styled.button`
   padding: 10px 20px;
   font-size: 1em;
@@ -118,8 +120,8 @@ export const SearchButton = styled.button`
 `;
 
 export const AutocompleteList = styled.ul`
-  position: absolute;
-  top: 100%;
+  position: absolute; // 변경된 부분
+  top: 100%; // 변경된 부분
   left: 0;
   background: white;
   border: 1px solid #ccc;
@@ -139,6 +141,11 @@ export const AutocompleteItem = styled.li`
   cursor: pointer;
   &:hover {
     background: #f0f0f0;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 0.6em;
+    padding: 8px;
   }
 `;
 
@@ -264,7 +271,7 @@ export const FilterInfoContainer = styled.div`
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    height: 25px;
+    height: 20px;
   }
 `;
 
