@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Slider from 'react-slick';
+import { Helmet } from 'react-helmet-async';
 import { ref, getDownloadURL, listAll } from 'firebase/storage';
 import { storage } from '../firebase';
 import useStore from '../store/useStore';
@@ -159,7 +160,7 @@ const SampleNextArrow = (props) => {
       onClick={onClick}
     />
   );
-}
+};
 
 const SamplePrevArrow = (props) => {
   const { className, style, onClick } = props;
@@ -170,7 +171,7 @@ const SamplePrevArrow = (props) => {
       onClick={onClick}
     />
   );
-}
+};
 
 const BreedDetail = () => {
   const selectedBreed = useStore(state => state.selectedBreed);
@@ -224,7 +225,51 @@ const BreedDetail = () => {
 
   return (
     <DetailContainer>
-      <h2>{selectedBreed.koreanName} ({selectedBreed.englishName})</h2>
+      <Helmet>
+        <title>{selectedBreed.koreanName} ({selectedBreed.englishName}) - Dog List</title>
+        <meta name="description" content={`당신에게 맞는 강아지를 찾고 있나요? ${selectedBreed.koreanName}은(는) ${selectedBreed.temperament} 성격을 가진 품종입니다. ${selectedBreed.breedGroup} 그룹에 속하며, 키: ${selectedBreed.height}, 체중: ${selectedBreed.weight}, 수명: ${selectedBreed.lifeExpectancy}. 지금 더 알아보세요!`} />
+        <meta name="keywords" content={`강아지, 개 품종, ${selectedBreed.koreanName}, ${selectedBreed.englishName}, 반려동물, 애완견`} />
+        <meta property="og:title" content={`${selectedBreed.koreanName} (${selectedBreed.englishName}) - Dog List`} />
+        <meta property="og:description" content={`품종: ${selectedBreed.koreanName}. 이 품종은 ${selectedBreed.breedGroup} 그룹에 속하며, 키: ${selectedBreed.height}, 체중: ${selectedBreed.weight}, 성격: ${selectedBreed.temperament}. 더 알아보세요!`} />
+        <meta property="og:image" content={images[0]} />
+        <meta property="og:url" content={`https://www.doglist.info/breeds/${selectedBreed.englishName}`} />
+        <meta property="og:type" content="website" />
+        <link rel="canonical" href={`https://www.doglist.info/breeds/${selectedBreed.englishName}`} />
+        <script type="application/ld+json">
+          {`
+        {
+          "@context": "https://schema.org",
+          "@type": "DogBreed",
+          "name": "${selectedBreed.koreanName}",
+          "alternateName": "${selectedBreed.englishName}",
+          "image": "${images[0]}",
+          "description": "${selectedBreed.description}",
+          "breedGroup": "${selectedBreed.breedGroup}",
+          "height": "${selectedBreed.height}",
+          "weight": "${selectedBreed.weight}",
+          "lifeExpectancy": "${selectedBreed.lifeExpectancy}",
+          "origin": "${selectedBreed.origin}",
+          "coatLength": "${selectedBreed.coatLength}",
+          "coatType": "${selectedBreed.coatType}",
+          "adaptabilityLevel": "${selectedBreed.adaptabilityLevel}",
+          "affectionWithFamily": "${selectedBreed.affectionWithFamily}",
+          "goodWithOtherDogs": "${selectedBreed.goodWithOtherDogs}",
+          "goodWithYoungChildren": "${selectedBreed.goodWithYoungChildren}",
+          "opennessToStrangers": "${selectedBreed.opennessToStrangers}",
+          "guardProtectiveInstinct": "${selectedBreed.guardProtectiveInstinct}",
+          "energyLevel": "${selectedBreed.energyLevel}",
+          "playfulnessLevel": "${selectedBreed.playfulnessLevel}",
+          "needsMentalStimulation": "${selectedBreed.needsMentalStimulation}",
+          "trainabilityLevel": "${selectedBreed.trainabilityLevel}",
+          "sheddingLevel": "${selectedBreed.sheddingLevel}",
+          "groomingLevel": "${selectedBreed.groomingLevel}",
+          "barkingLevel": "${selectedBreed.barkingLevel}",
+          "droolingLevel": "${selectedBreed.droolingLevel}",
+          "temperament": "${selectedBreed.temperament}"
+        }
+        `}
+        </script>
+      </Helmet>
       {loading || !allImagesLoaded ? (
         <LoaderDiv>
           <Loader />
@@ -246,7 +291,6 @@ const BreedDetail = () => {
           </SingleImageContainer>
         )
       )}
-
       <Section>
         <SectionTitle>기본 정보</SectionTitle>
         <ul>
@@ -259,7 +303,6 @@ const BreedDetail = () => {
           <li><strong>기원: </strong>{selectedBreed.origin}</li>
         </ul>
       </Section>
-
       <Section>
         <SectionTitle>성격 및 훈련</SectionTitle>
         <BarSection>
@@ -363,14 +406,12 @@ const BreedDetail = () => {
           </BarContainer>
         </BarSection>
       </Section>
-
       <Section>
         <SectionTitle>추가 정보</SectionTitle>
         <p><strong>운동: </strong>{selectedBreed.exercise}</p>
         <p><strong>영양: </strong>{selectedBreed.nutrition}</p>
         <p><strong>훈련: </strong>{selectedBreed.training}</p>
       </Section>
-
       <Section>
         <SectionTitle>설명</SectionTitle>
         <p>{selectedBreed.description}</p>

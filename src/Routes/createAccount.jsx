@@ -1,12 +1,13 @@
+import React, { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import dogLoginPicture from "../Pictures/fatty-corgi-Zn5chZcnFRA-unsplash.jpg";
 import { useForm } from "react-hook-form";
-import React, { useState } from "react";
 import { Wrapper, BackgroundImage, FormBox, Form, Input, ErrorMessage } from "../createAccount/createAccountCss";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth, db } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import { FirebaseError } from "firebase/app";
-import { doc, setDoc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
+import { doc, setDoc, collection, query, where, getDocs } from "firebase/firestore";
 
 export default function CreateAccount() {
   const navigate = useNavigate();
@@ -68,6 +69,28 @@ export default function CreateAccount() {
 
   return (
     <Wrapper>
+      <Helmet>
+        <title>계정 생성 - Dog List</title>
+        <meta name="description" content="Dog List에서 새로운 계정을 생성하세요. 쉽고 빠른 계정 생성으로 다양한 강아지 품종에 대한 정보를 제공받을 수 있습니다." />
+        <meta name="keywords" content="계정 생성, Dog List, 회원가입, 강아지 정보" />
+        <meta property="og:title" content="계정 생성 - Dog List" />
+        <meta property="og:description" content="Dog List에서 새로운 계정을 생성하세요. 쉽고 빠른 계정 생성으로 다양한 강아지 품종에 대한 정보를 제공받을 수 있습니다." />
+        <meta property="og:image" content="/mainImage.avif" />
+        <meta property="og:url" content="https://www.doglist.info/createAccount" />
+        <meta property="og:type" content="website" />
+        <link rel="canonical" href="https://www.doglist.info/createAccount" />
+        <script type="application/ld+json">
+          {`
+          {
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "계정 생성 - Dog List",
+            "url": "https://www.doglist.info/createAccount",
+            "description": "Dog List에서 새로운 계정을 생성하세요. 쉽고 빠른 계정 생성으로 다양한 강아지 품종에 대한 정보를 제공받을 수 있습니다."
+          }
+          `}
+        </script>
+      </Helmet>
       <BackgroundImage src={dogLoginPicture} alt="dog" />
       <FormBox>
         <Form onSubmit={handleSubmit(onSubmit)}>

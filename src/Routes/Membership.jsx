@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { Helmet } from 'react-helmet-async';
 import Modal from 'react-modal';
+
 
 const MembershipContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 20px;
-`;
-
-const Title = styled.h1`
-  color: #2C3E50;
 `;
 
 const Subtitle = styled.h2`
@@ -236,7 +234,28 @@ const Membership = () => {
 
   return (
     <MembershipContainer>
-      <Title>APEUni VIP</Title>
+            <Helmet>
+        <title>멤버십 - Dog List</title>
+        <meta name="description" content="Dog List 멤버십에 가입하고 다양한 혜택을 누리세요. 초기멤버 뱃지 구매와 제작자 기부를 통해 지원할 수 있습니다." />
+        <meta name="keywords" content="멤버십, 강아지, 개 품종, Dog List, 초기멤버, 제작자 기부" />
+        <meta property="og:title" content="멤버십 - Dog List" />
+        <meta property="og:description" content="Dog List 멤버십에 가입하고 다양한 혜택을 누리세요. 초기멤버 뱃지 구매와 제작자 기부를 통해 지원할 수 있습니다." />
+        <meta property="og:image" content="/mainImage.avif" />
+        <meta property="og:url" content="https://www.doglist.info/membership" />
+        <meta property="og:type" content="website" />
+        <link rel="canonical" href="https://www.doglist.info/membership" />
+        <script type="application/ld+json">
+          {`
+          {
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "멤버십 - Dog List",
+            "description": "Dog List 멤버십에 가입하고 다양한 혜택을 누리세요. 초기멤버 뱃지 구매와 제작자 기부를 통해 지원할 수 있습니다.",
+            "url": "https://www.doglist.info/membership"
+          }
+          `}
+        </script>
+      </Helmet>
       <SectionContainer>
         <BadgeContainer>
           <BadgeTitle>초기멤버 뱃지</BadgeTitle>
