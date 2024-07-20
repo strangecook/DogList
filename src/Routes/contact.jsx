@@ -4,6 +4,7 @@ import { auth, db } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, addDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 const ContactContainer = styled.div`
   max-width: 800px;
@@ -51,8 +52,8 @@ const SubmitButton = styled.button`
 const Notification = styled.p`
   margin-top: 20px;
   font-size: 16px;
-  color: ${(props) => (props.$isError ? 'red' : 'green')}; /* 에러 메시지는 빨간색, 성공 메시지는 초록색 */
-  text-align: center; /* 중앙 정렬 */
+  color: ${(props) => (props.$isError ? 'red' : 'green')};
+  text-align: center;
 `;
 
 const categories = [
@@ -77,7 +78,7 @@ const Contact = () => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (!currentUser) {
-        navigate('/login'); // 로그인 페이지로 리다이렉트
+        navigate('/login');
       } else {
         setUser(currentUser);
       }
@@ -113,7 +114,7 @@ const Contact = () => {
         userId: user.uid,
         userEmail: user.email,
         timestamp: new Date(),
-        status: false  // 기본적으로 '처리 중' 상태로 설정
+        status: false
       });
       setNotification('문의가 전송되었습니다.');
       setCategory(categories[0]);
@@ -128,6 +129,28 @@ const Contact = () => {
 
   return (
     <ContactContainer>
+      <Helmet>
+        <title>개발자 문의 - Dog List</title>
+        <meta name="description" content="Dog List의 개발자에게 문의하거나 피드백을 제공할 수 있습니다. 다양한 카테고리에서 문제를 선택하고 메시지를 남겨주세요." />
+        <meta name="keywords" content="강아지, 개 품종, Dog List, 개발자 문의, 피드백, 문제 해결" />
+        <meta property="og:title" content="개발자 문의 - Dog List" />
+        <meta property="og:description" content="Dog List의 개발자에게 문의하거나 피드백을 제공할 수 있습니다. 다양한 카테고리에서 문제를 선택하고 메시지를 남겨주세요." />
+        <meta property="og:image" content="/mainImage.avif" />
+        <meta property="og:url" content="https://www.doglist.info/contact" />
+        <meta property="og:type" content="website" />
+        <link rel="canonical" href="https://www.doglist.info/contact" />
+        <script type="application/ld+json">
+          {`
+          {
+            "@context": "https://schema.org",
+            "@type": "ContactPage",
+            "name": "개발자 문의 - Dog List",
+            "description": "Dog List의 개발자에게 문의하거나 피드백을 제공할 수 있습니다. 다양한 카테고리에서 문제를 선택하고 메시지를 남겨주세요.",
+            "url": "https://www.doglist.info/contact"
+          }
+          `}
+        </script>
+      </Helmet>
       <h2>개발자 문의</h2>
       <form onSubmit={handleSubmit}>
         <label htmlFor="category">문의 카테고리:</label>

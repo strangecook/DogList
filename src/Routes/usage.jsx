@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Helmet } from 'react-helmet-async';
 
 const UsageContainer = styled.div`
   max-width: 800px;
@@ -43,6 +44,28 @@ const ListItem = styled.li`
 const Usage = () => {
   return (
     <UsageContainer>
+      <Helmet>
+        <title>Dog List 사용 설명</title>
+        <meta name="description" content="Dog List는 다양한 강아지 품종에 대한 신뢰할 수 있는 정보를 제공합니다. 강아지 품종 찾기 및 관리 방법을 확인해보세요." />
+        <meta name="keywords" content="강아지, 개 품종, 애완동물, Dog List, 반려견, 강아지 관리" />
+        <meta property="og:title" content="Dog List 사용 설명" />
+        <meta property="og:description" content="Dog List는 다양한 강아지 품종에 대한 신뢰할 수 있는 정보를 제공합니다. 강아지 품종 찾기 및 관리 방법을 확인해보세요." />
+        <meta property="og:image" content="/mainImage.avif" />
+        <meta property="og:url" content="https://www.doglist.info/usage" />
+        <meta property="og:type" content="website" />
+        <link rel="canonical" href="https://www.doglist.info/usage" />
+        <script type="application/ld+json">
+          {`
+          {
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "Dog List 사용 설명",
+            "description": "Dog List는 다양한 강아지 품종에 대한 신뢰할 수 있는 정보를 제공합니다. 강아지 품종 찾기 및 관리 방법을 확인해보세요.",
+            "url": "https://www.doglist.info/usage"
+          }
+          `}
+        </script>
+      </Helmet>
       <h2>사용 설명</h2>
 
       <Section>
@@ -124,7 +147,6 @@ const Usage = () => {
         <SectionTitle>추가사항</SectionTitle>
         <Paragraph>저희 사이트는 1인 개발로 진행되고 있어 업데이트와 개선이 다소 늦어질 수 있습니다. 양해 부탁드립니다.</Paragraph>
       </Section>
-
     </UsageContainer>
   );
 };

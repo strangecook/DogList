@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { Helmet } from 'react-helmet-async';
 import { auth, storage, db } from '../firebase';
 import { onAuthStateChanged, updateProfile, updateEmail, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
@@ -212,6 +213,28 @@ const Profile = () => {
 
   return (
     <ProfileContainer>
+      <Helmet>
+        <title>프로필 - Dog List</title>
+        <meta name="description" content="사용자의 프로필을 업데이트하고, 사진을 업로드하며, 이메일과 비밀번호를 변경할 수 있는 페이지입니다." />
+        <meta name="keywords" content="프로필, 강아지, 개 품종, Dog List, 사용자 정보" />
+        <meta property="og:title" content="프로필 - Dog List" />
+        <meta property="og:description" content="사용자의 프로필을 업데이트하고, 사진을 업로드하며, 이메일과 비밀번호를 변경할 수 있는 페이지입니다." />
+        <meta property="og:image" content={photoURL || pawImage} />
+        <meta property="og:url" content="https://www.doglist.info/profile" />
+        <meta property="og:type" content="website" />
+        <link rel="canonical" href="https://www.doglist.info/profile" />
+        <script type="application/ld+json">
+          {`
+          {
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "프로필 - Dog List",
+            "description": "사용자의 프로필을 업데이트하고, 사진을 업로드하며, 이메일과 비밀번호를 변경할 수 있는 페이지입니다.",
+            "url": "https://www.doglist.info/profile"
+          }
+          `}
+        </script>
+      </Helmet>
       <ProfileImage src={photoURL || pawImage} alt="Profile" />
       <ProfileForm onSubmit={handleProfileUpdate}>
         <Label>이름</Label>

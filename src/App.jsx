@@ -10,7 +10,8 @@ import Profile from './Routes/Profile';
 import ProtectedRoute from './Routes/ProtectedRoute';
 import { createGlobalStyle } from 'styled-components';
 import BreedDetail from './component/BreedDetail';
-import Membership from './Routes/Membership'; // 새로 추가된 경로
+import Membership from './Routes/Membership';
+import { HelmetProvider } from 'react-helmet-async';
 
 const router = createBrowserRouter([
   {
@@ -50,7 +51,7 @@ const router = createBrowserRouter([
         )
       },
       {
-        path: "membership",  // 새로 추가된 멤버십 경로
+        path: "membership",
         element: (
           <ProtectedRoute>
             <Membership />
@@ -75,10 +76,10 @@ const GlobalStyles = createGlobalStyle`
 
 const App = () => {
   return (
-    <>
+    <HelmetProvider>
       <GlobalStyles />
       <RouterProvider router={router} />
-    </>
+    </HelmetProvider>
   );
 };
 

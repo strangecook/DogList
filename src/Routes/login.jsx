@@ -4,7 +4,8 @@ import googleLogo from "../Pictures/logo_google_icon.png"; // Google 로고 이�
 import facebookLogo from "../Pictures/facebook_social media_social_icon.png"; // Facebook 로고 이미지 추가
 import { useForm } from "react-hook-form";
 import React, { useState } from "react";
-import { LoginCover, DogLoginImage, LoginBox, Form, Input, SignUpButton, ErrorMessage, GoogleLoginButton, FacebookLoginButton, ButtonWrapper } from "../login/loginCss"; // FacebookLoginButton 추가
+import { Helmet } from 'react-helmet-async';
+import { LoginCover, DogLoginImage, LoginBox, Form, Input, SignUpButton, ErrorMessage, GoogleLoginButton, FacebookLoginButton, ButtonWrapper } from "../login/loginCss";
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider, updateProfile } from "firebase/auth";
 import { auth, db } from "../firebase";
 import { FirebaseError } from "firebase/app";
@@ -105,6 +106,28 @@ export default function Login() {
 
   return (
     <LoginCover>
+      <Helmet>
+        <title>로그인 - Dog List</title>
+        <meta name="description" content="Dog List에 로그인하여 다양한 강아지 품종에 대한 정보를 확인하세요." />
+        <meta name="keywords" content="로그인, Dog List, 강아지 정보" />
+        <meta property="og:title" content="로그인 - Dog List" />
+        <meta property="og:description" content="Dog List에 로그인하여 다양한 강아지 품종에 대한 정보를 확인하세요." />
+        <meta property="og:image" content="/mainImage.avif" />
+        <meta property="og:url" content="https://www.doglist.info/login" />
+        <meta property="og:type" content="website" />
+        <link rel="canonical" href="https://www.doglist.info/login" />
+        <script type="application/ld+json">
+          {`
+          {
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "로그인 - Dog List",
+            "url": "https://www.doglist.info/login",
+            "description": "Dog List에 로그인하여 다양한 강아지 품종에 대한 정보를 확인하세요."
+          }
+          `}
+        </script>
+      </Helmet>
       <DogLoginImage src={dogLoginPicture} alt="dog" />
       <LoginBox>
         <Form onSubmit={handleSubmit(onSubmit)}>
