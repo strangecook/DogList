@@ -243,7 +243,7 @@ const DogCard = forwardRef(({ breed, onClick }, ref) => {
         {loading ? (
           <ClipLoader color="#4caf50" size={50} />
         ) : (
-          imageUrl && <Image src={imageUrl} alt={breed.englishName} />
+          imageUrl && <Image src={imageUrl} alt={breed.englishName} dog breed/>
         )}
         <Overlay className={showContent ? "" : "mobile-flex"} style={{ opacity: hovered ? 1 : 0 }} showContent={showContent}>
           <BarSection>
