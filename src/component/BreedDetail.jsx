@@ -6,6 +6,7 @@ import { ref, getDownloadURL, listAll } from 'firebase/storage';
 import { storage } from '../firebase';
 import useStore from '../store/useStore';
 import BreedHelmet from './BreedHelmet';
+import BarItem from './BarItem'; // Import BarItem
 import {
   DetailContainer,
   Section,
@@ -15,12 +16,7 @@ import {
   SingleImageContainer,
   LoaderDiv,
   Loader,
-  BarContainer,
-  Emoji,
-  Label,
-  BarWrapper,
-  BarSection,
-  Bar
+  BarSection
 } from './BreedDetailStyles';
 
 const fetchImagesFromStorage = async (breedName) => {
@@ -176,104 +172,20 @@ const BreedDetail = () => {
 
 const renderBars = (breed) => (
   <>
-    <BarContainer>
-      <Emoji>🌟</Emoji>
-      <Label>적응력: {breed.adaptabilityLevel}</Label>
-      <BarWrapper>
-        <Bar width={`${breed.adaptabilityLevel * 20}%`} />
-      </BarWrapper>
-    </BarContainer>
-    <BarContainer>
-      <Emoji>❤️</Emoji>
-      <Label>가족과의 애정: {breed.affectionWithFamily}</Label>
-      <BarWrapper>
-        <Bar width={`${breed.affectionWithFamily * 20}%`} />
-      </BarWrapper>
-    </BarContainer>
-    <BarContainer>
-      <Emoji>🐾</Emoji>
-      <Label>다른 개와의 친화력: {breed.goodWithOtherDogs}</Label>
-      <BarWrapper>
-        <Bar width={`${breed.goodWithOtherDogs * 20}%`} />
-      </BarWrapper>
-    </BarContainer>
-    <BarContainer>
-      <Emoji>👶</Emoji>
-      <Label>아이와의 친화력: {breed.goodWithYoungChildren}</Label>
-      <BarWrapper>
-        <Bar width={`${breed.goodWithYoungChildren * 20}%`} />
-      </BarWrapper>
-    </BarContainer>
-    <BarContainer>
-      <Emoji>🐕</Emoji>
-      <Label>타인에 대한 개방성: {breed.opennessToStrangers}</Label>
-      <BarWrapper>
-        <Bar width={`${breed.opennessToStrangers * 20}%`} />
-      </BarWrapper>
-    </BarContainer>
-    <BarContainer>
-      <Emoji>🛡️</Emoji>
-      <Label>보호 본능: {breed.guardProtectiveInstinct}</Label>
-      <BarWrapper>
-        <Bar width={`${breed.guardProtectiveInstinct * 20}%`} />
-      </BarWrapper>
-    </BarContainer>
-    <BarContainer>
-      <Emoji>⚡</Emoji>
-      <Label>에너지 수준: {breed.energyLevel}</Label>
-      <BarWrapper>
-        <Bar width={`${breed.energyLevel * 20}%`} />
-      </BarWrapper>
-    </BarContainer>
-    <BarContainer>
-      <Emoji>🎮</Emoji>
-      <Label>장난기: {breed.playfulnessLevel}</Label>
-      <BarWrapper>
-        <Bar width={`${breed.playfulnessLevel * 20}%`} />
-      </BarWrapper>
-    </BarContainer>
-    <BarContainer>
-      <Emoji>🧠</Emoji>
-      <Label>정신적 자극 필요도: {breed.needsMentalStimulation}</Label>
-      <BarWrapper>
-        <Bar width={`${breed.needsMentalStimulation * 20}%`} />
-      </BarWrapper>
-    </BarContainer>
-    <BarContainer>
-      <Emoji>🎓</Emoji>
-      <Label>훈련 가능성: {breed.trainabilityLevel}</Label>
-      <BarWrapper>
-        <Bar width={`${breed.trainabilityLevel * 20}%`} />
-      </BarWrapper>
-    </BarContainer>
-    <BarContainer>
-      <Emoji>🪮</Emoji>
-      <Label>털 빠짐 정도: {breed.sheddingLevel}</Label>
-      <BarWrapper>
-        <Bar width={`${breed.sheddingLevel * 20}%`} reverse="true" />
-      </BarWrapper>
-    </BarContainer>
-    <BarContainer>
-      <Emoji>🧼</Emoji>
-      <Label>그루밍 필요도: {breed.groomingLevel}</Label>
-      <BarWrapper>
-        <Bar width={`${breed.groomingLevel * 20}%`} reverse="true" />
-      </BarWrapper>
-    </BarContainer>
-    <BarContainer>
-      <Emoji>🗣️</Emoji>
-      <Label>짖는 수준: {breed.barkingLevel}</Label>
-      <BarWrapper>
-        <Bar width={`${breed.barkingLevel * 20}%`} reverse="true" />
-      </BarWrapper>
-    </BarContainer>
-    <BarContainer>
-      <Emoji>💧</Emoji>
-      <Label>침 흘림 수준: {breed.droolingLevel}</Label>
-      <BarWrapper>
-        <Bar width={`${breed.droolingLevel * 20}%`} reverse="true" />
-      </BarWrapper>
-    </BarContainer>
+    <BarItem emoji="🌟" label="적응력" level={breed.adaptabilityLevel} />
+    <BarItem emoji="❤️" label="가족과의 애정" level={breed.affectionWithFamily} />
+    <BarItem emoji="🐾" label="다른 개와의 친화력" level={breed.goodWithOtherDogs} />
+    <BarItem emoji="👶" label="아이와의 친화력" level={breed.goodWithYoungChildren} />
+    <BarItem emoji="🐕" label="타인에 대한 개방성" level={breed.opennessToStrangers} />
+    <BarItem emoji="🛡️" label="보호 본능" level={breed.guardProtectiveInstinct} />
+    <BarItem emoji="⚡" label="에너지 수준" level={breed.energyLevel} />
+    <BarItem emoji="🎮" label="장난기" level={breed.playfulnessLevel} />
+    <BarItem emoji="🧠" label="정신적 자극 필요도" level={breed.needsMentalStimulation} />
+    <BarItem emoji="🎓" label="훈련 가능성" level={breed.trainabilityLevel} />
+    <BarItem emoji="🪮" label="털 빠짐 정도" level={breed.sheddingLevel} reverse={true} />
+    <BarItem emoji="🧼" label="그루밍 필요도" level={breed.groomingLevel} reverse={true} />
+    <BarItem emoji="🗣️" label="짖는 수준" level={breed.barkingLevel} reverse={true} />
+    <BarItem emoji="💧" label="침 흘림 수준" level={breed.droolingLevel} reverse={true} />
   </>
 );
 
