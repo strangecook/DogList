@@ -60,6 +60,7 @@ const fetchAndStoreBreeds = async () => {
   const firestoreData = await fetchBreedsFromFirestore();
   const mergedData = await mergeBreedsData(firestoreData);
   localStorage.setItem('breedsData', JSON.stringify(mergedData));
+  return mergedData;
 };
 
 // Get breeds data from localStorage

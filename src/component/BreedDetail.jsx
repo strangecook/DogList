@@ -5,7 +5,7 @@ import Slider from 'react-slick';
 import useStore from '../store/useStore';
 import BreedHelmet from './BreedHelmet';
 import BarItem from './BarItem';
-import { fetchImagesFromStorage } from '../dataPatch/fetchAndStoreBreeds';
+import { fetchImagesFromStorage, fetchAndStoreBreeds, getBreedsData } from '../dataPatch/fetchAndStoreBreeds';
 import { sliderSettings } from './SliderComponents';
 import {
   DetailContainer,
@@ -21,9 +21,26 @@ import {
 
 const BreedDetail = () => {
   const selectedBreed = useStore(state => state.selectedBreed);
+  const setSelectedBreed = useStore(state => state.setSelectedBreed);
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [allImagesLoaded, setAllImagesLoaded] = useState(false);
+  const [error, setError] = useState(null);
+
+  // 페이지가 로드될 때 로컬 스토리지에서 selectedBreed 값을 불러오는 로직
+  useEffect(() => {
+    const storedBreed = localStorage.getItem('selectedBreed');
+    if (storedBreed) {
+      setSelectedBreed(JSON.parse(storedBreed));
+    }
+  }, [setSelectedBreed]);
+
+  // selectedBreed 값을 로컬 스토리지에 저장하는 로직
+  useEffect(() => {
+    if (selectedBreed) {
+      localStorage.setItem('selectedBreed', JSON.stringify(selectedBreed));
+    }
+  }, [selectedBreed]);
 
   const fetchImages = useCallback(async () => {
     if (selectedBreed) {
@@ -34,10 +51,30 @@ const BreedDetail = () => {
     }
   }, [selectedBreed]);
 
+  const initializeBreedsData = useCallback(async () => {
+    const breedsData = getBreedsData();
+    if (!breedsData) {
+      try {
+        const newBreedsData = await fetchAndStoreBreeds();
+        if (newBreedsData) {
+          fetchImages();
+        } else {
+          setError('데이터를 불러오는 데 문제가 발생했습니다.');
+          setLoading(false);
+        }
+      } catch (error) {
+        setError('데이터를 불러오는 데 문제가 발생했습니다.');
+        setLoading(false);
+      }
+    } else {
+      fetchImages();
+    }
+  }, [fetchImages]);
+
   useEffect(() => {
     window.scrollTo(0, 0);
-    fetchImages();
-  }, [fetchImages]);
+    initializeBreedsData();
+  }, [initializeBreedsData]);
 
   useEffect(() => {
     if (images.length > 0) {
@@ -54,6 +91,10 @@ const BreedDetail = () => {
       });
     }
   }, [images]);
+
+  if (error) {
+    return <DetailContainer>{error}</DetailContainer>;
+  }
 
   if (!selectedBreed) {
     return <DetailContainer>해당 강아지의 정보를 찾을 수 없습니다.</DetailContainer>;
