@@ -2,11 +2,11 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import Slider from 'react-slick';
-import { ref, getDownloadURL, listAll } from 'firebase/storage';
-import { storage } from '../firebase';
 import useStore from '../store/useStore';
 import BreedHelmet from './BreedHelmet';
-import BarItem from './BarItem'; // Import BarItem
+import BarItem from './BarItem';
+import { fetchImagesFromStorage } from '../dataPatch/fetchAndStoreBreeds';
+import { sliderSettings } from './SliderComponents';
 import {
   DetailContainer,
   Section,
@@ -18,51 +18,6 @@ import {
   Loader,
   BarSection
 } from './BreedDetailStyles';
-
-const fetchImagesFromStorage = async (breedName) => {
-  try {
-    const formattedBreedName = breedName.replace(/ /g, '_');
-    const folderRef = ref(storage, `dog/${formattedBreedName}`);
-    const fileList = await listAll(folderRef);
-
-    if (fileList.items.length > 0) {
-      const imageUrls = await Promise.all(
-        fileList.items.map(async (itemRef) => {
-          const url = await getDownloadURL(itemRef);
-          return url;
-        })
-      );
-      return imageUrls;
-    } else {
-      return [];
-    }
-  } catch (error) {
-    console.error(`Error fetching images from Storage for breed ${breedName}:`, error);
-    return [];
-  }
-};
-
-const SampleNextArrow = (props) => {
-  const { className, style, onClick } = props;
-  return (
-    <div
-      className={className}
-      style={{ ...style, display: "block", background: "rgba(0, 0, 0, 0.5)", borderRadius: "50%" }}
-      onClick={onClick}
-    />
-  );
-};
-
-const SamplePrevArrow = (props) => {
-  const { className, style, onClick } = props;
-  return (
-    <div
-      className={className}
-      style={{ ...style, display: "block", background: "rgba(0, 0, 0, 0.5)", borderRadius: "50%" }}
-      onClick={onClick}
-    />
-  );
-};
 
 const BreedDetail = () => {
   const selectedBreed = useStore(state => state.selectedBreed);
@@ -103,16 +58,6 @@ const BreedDetail = () => {
   if (!selectedBreed) {
     return <DetailContainer>해당 강아지의 정보를 찾을 수 없습니다.</DetailContainer>;
   }
-
-  const sliderSettings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    nextArrow: <SampleNextArrow />,
-    prevArrow: <SamplePrevArrow />,
-  };
 
   return (
     <DetailContainer>
