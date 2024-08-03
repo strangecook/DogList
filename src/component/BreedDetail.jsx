@@ -1,6 +1,7 @@
 // src/components/BreedDetail.js
 
 import React, { useEffect, useState, useCallback } from 'react';
+import { useParams } from 'react-router-dom';
 import Slider from 'react-slick';
 import useStore from '../store/useStore';
 import BreedHelmet from './BreedHelmet';
@@ -20,6 +21,7 @@ import {
 } from './BreedDetailStyles';
 
 const BreedDetail = () => {
+  const { breedName } = useParams(); // URL 파라미터에서 breedName 가져오기
   const selectedBreed = useStore(state => state.selectedBreed);
   const setSelectedBreed = useStore(state => state.setSelectedBreed);
   const [images, setImages] = useState([]);
@@ -27,13 +29,36 @@ const BreedDetail = () => {
   const [allImagesLoaded, setAllImagesLoaded] = useState(false);
   const [error, setError] = useState(null);
 
-  // 페이지가 로드될 때 로컬 스토리지에서 selectedBreed 값을 불러오는 로직
+  // URL 파라미터에서 가져온 breedName을 통해 데이터를 설정하는 로직 추가
   useEffect(() => {
-    const storedBreed = localStorage.getItem('selectedBreed');
-    if (storedBreed) {
-      setSelectedBreed(JSON.parse(storedBreed));
+    const fetchBreedData = async () => {
+      const breedsData = getBreedsData();
+      if (!breedsData) {
+        try {
+          const newBreedsData = await fetchAndStoreBreeds();
+          const breed = newBreedsData[breedName.toLowerCase()];
+          if (breed) {
+            setSelectedBreed(breed);
+          } else {
+            setError('해당 품종 데이터를 찾을 수 없습니다.');
+          }
+        } catch (error) {
+          setError('데이터를 불러오는 데 문제가 발생했습니다.');
+        }
+      } else {
+        const breed = breedsData[breedName.toLowerCase()];
+        if (breed) {
+          setSelectedBreed(breed);
+        } else {
+          setError('해당 품종 데이터를 찾을 수 없습니다.');
+        }
+      }
+    };
+
+    if (breedName) {
+      fetchBreedData();
     }
-  }, [setSelectedBreed]);
+  }, [breedName, setSelectedBreed]);
 
   // selectedBreed 값을 로컬 스토리지에 저장하는 로직
   useEffect(() => {
@@ -51,30 +76,11 @@ const BreedDetail = () => {
     }
   }, [selectedBreed]);
 
-  const initializeBreedsData = useCallback(async () => {
-    const breedsData = getBreedsData();
-    if (!breedsData) {
-      try {
-        const newBreedsData = await fetchAndStoreBreeds();
-        if (newBreedsData) {
-          fetchImages();
-        } else {
-          setError('데이터를 불러오는 데 문제가 발생했습니다.');
-          setLoading(false);
-        }
-      } catch (error) {
-        setError('데이터를 불러오는 데 문제가 발생했습니다.');
-        setLoading(false);
-      }
-    } else {
+  useEffect(() => {
+    if (selectedBreed) {
       fetchImages();
     }
-  }, [fetchImages]);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    initializeBreedsData();
-  }, [initializeBreedsData]);
+  }, [selectedBreed, fetchImages]);
 
   useEffect(() => {
     if (images.length > 0) {
